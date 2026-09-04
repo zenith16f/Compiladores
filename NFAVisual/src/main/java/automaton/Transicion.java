@@ -16,8 +16,11 @@ public class Transicion {
         this.estadoDestino = estadoDestino;
     }
 
-    // Getters & Setters
+    public boolean IsEpsilon() {
+        return simboloInferior == Simbolo.EPSILON;
+    }
 
+    // Getters & Setters
     public char getSimboloInferior() {
         return simboloInferior;
     }

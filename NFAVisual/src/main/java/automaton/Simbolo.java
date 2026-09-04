@@ -14,7 +14,7 @@ public final class Simbolo {
     }
 
     // Methods
-    public static boolean IsSpecial(char simbolo) {
-        return ESPECIALES.contains(simbolo);
+    public static boolean IsSpecial(char character) {
+        return ESPECIALES.contains(character);
     }
 }
