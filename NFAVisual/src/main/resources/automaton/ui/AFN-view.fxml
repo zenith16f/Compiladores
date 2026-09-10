@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="automaton.ui.PrincipalController"
+            styleClass="raiz">
+
+    <top>
+        <VBox spacing="12" styleClass="barra-superior">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <Label text="Gestor de Autómatas Finitos" styleClass="titulo"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Nuevo AFN:"/>
+                <TextField fx:id="campoNombreNuevo" promptText="nombre" prefWidth="120"/>
+                <TextField fx:id="campoSimboloInferior" promptText="simbolo" prefWidth="70"/>
+                <TextField fx:id="campoSimboloSuperior" promptText="hasta (opcional)" prefWidth="120"/>
+                <Button text="Crear AFN" onAction="#onCrearAfn" styleClass="boton-primario"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <ComboBox fx:id="comboAfnUno" promptText="AFN 1" prefWidth="180"/>
+                <ComboBox fx:id="comboAfnDos" promptText="AFN 2" prefWidth="180"/>
+                <Button text="Unir" onAction="#onUnir" styleClass="boton-primario"/>
+                <Button text="Concatenar" onAction="#onConcatenar" styleClass="boton-primario"/>
+                <Button text="Cerradura *" onAction="#onCerraduraKleene" styleClass="boton-secundario"/>
+                <Button text="Cerradura +" onAction="#onCerraduraPositiva" styleClass="boton-secundario"/>
+                <Button text="Opcional ?" onAction="#onOpOpcional" styleClass="boton-secundario"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="8" styleClass="panel-catalogo">
+            <padding>
+                <Insets top="8" right="16" bottom="16" left="16"/>
+            </padding>
+            <Label text="AFN registrados" styleClass="subtitulo"/>
+            <ListView fx:id="listaAfn" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="barra-inferior">
+            <padding>
+                <Insets top="12" right="16" bottom="16" left="16"/>
+            </padding>
+            <TextField fx:id="campoNuevoNombre" promptText="Nuevo nombre" prefWidth="220"/>
+            <Button text="Renombrar seleccionado" onAction="#onRenombrar" styleClass="boton-secundario"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

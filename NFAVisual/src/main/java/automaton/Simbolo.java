@@ -1,6 +1,5 @@
 package automaton;
 
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Set;
 
 public final class Simbolo {
