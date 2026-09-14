@@ -1,7 +1,6 @@
 package automaton;
 
 public class AFD {
+//arreglo de estados
 
-    Conjunto<char>Alfabeto
-            EdoAFD
 }

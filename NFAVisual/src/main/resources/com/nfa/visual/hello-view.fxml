@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="567.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:controller="com.nfa.visual.HelloController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="567.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
