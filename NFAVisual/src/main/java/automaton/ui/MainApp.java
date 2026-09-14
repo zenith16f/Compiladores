@@ -10,7 +10,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("AFN-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Shell.fxml"));
         Parent raiz = loader.load();
 
         Scene escena = new Scene(raiz, 900, 600);

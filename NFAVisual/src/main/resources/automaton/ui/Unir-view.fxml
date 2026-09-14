@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="automaton.ui.UnirController"
+      spacing="16" styleClass="panel-catalogo">
+    <padding>
+        <Insets top="24" right="24" bottom="24" left="24"/>
+    </padding>
+
+    <Label text="Unir AFN" styleClass="titulo"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="AFN a unir:"/>
+        <ComboBox fx:id="comboAfnUno" promptText="AFN 1" prefWidth="180"/>
+        <ComboBox fx:id="comboAfnDos" promptText="AFN 2" prefWidth="180"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Nombre del resultado:"/>
+        <TextField fx:id="campoNombreResultado" promptText="opcional" prefWidth="180"/>
+        <Button text="Unir" onAction="#onUnir" styleClass="boton-primario"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      spacing="8" alignment="CENTER" styleClass="panel-catalogo">
+    <padding>
+        <Insets top="40" right="24" bottom="24" left="24"/>
+    </padding>
+    <Label text="Unir AFN para el analizador léxico" styleClass="titulo"/>
+    <Label text="Pendiente: asignación de tokens por AFN y token de omisión (20001)." styleClass="subtitulo"/>
+</VBox>
