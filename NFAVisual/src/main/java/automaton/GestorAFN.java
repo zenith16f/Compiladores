@@ -75,7 +75,7 @@ public class GestorAFN {
     }
     
     public int Positiva(int id, String nombreResultado){
-        AFN resultado = ExigirEntrada(id).getAfn().CerraduraKleene();
+        AFN resultado = ExigirEntrada(id).getAfn().CerraduraPositiva();
         Eliminar(id);
         return Registrar(resultado, nombreResultado);
     }

@@ -4,14 +4,14 @@ public class EntradaAFN {
     private final int id;
     private final String nombre;
     private final AFN afn;
-    
+
     // Constructor
-    public EntradaAFN(int id, String nombre, AFN afn){
+    public EntradaAFN(int id, String nombre, AFN afn) {
         this.id = id;
         this.nombre = (nombre == null || nombre.isBlank()) ? ("AFN" + id) : nombre;
         this.afn = afn;
     }
-    
+
     // Getters
     public int getId() {
         return id;
@@ -23,5 +23,10 @@ public class EntradaAFN {
 
     public AFN getAfn() {
         return afn;
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
     }
 }
