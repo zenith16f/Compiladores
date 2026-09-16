@@ -1,11 +1,14 @@
 .raiz {
-    -fx-background-color: #f7f7fa;
+    -fx-background-color: #eceef2;
     -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
+/* ---------- Encabezado de pantalla: ya no es un bloque de color aparte, ---------- */
+/* ---------- solo un divisor sutil sobre el mismo lienzo claro.          ---------- */
+
 .barra-superior {
-    -fx-background-color: white;
-    -fx-border-color: transparent transparent #e5e5ea transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #dfe0e4 transparent;
     -fx-border-width: 0 0 1 0;
 }
 
@@ -21,49 +24,203 @@
     -fx-font-weight: 600;
 }
 
+/* ---------- Botones: un solo acento (rosa) en toda la app ---------- */
+
 .boton-primario {
-    -fx-background-color: #3b82f6;
+    -fx-background-color: #ff2f7e;
     -fx-text-fill: white;
-    -fx-background-radius: 6;
+    -fx-background-radius: 5;
     -fx-padding: 6 14 6 14;
     -fx-cursor: hand;
+    -fx-font-weight: 600;
 }
 
 .boton-primario:hover {
-    -fx-background-color: #2563eb;
+    -fx-background-color: #e0266b;
 }
 
 .boton-secundario {
-    -fx-background-color: #eef0f3;
-    -fx-text-fill: #1c1c1e;
-    -fx-background-radius: 6;
+    -fx-background-color: #1c1c1e;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
     -fx-padding: 6 14 6 14;
     -fx-cursor: hand;
 }
 
 .boton-secundario:hover {
-    -fx-background-color: #e2e4e8;
+    -fx-background-color: #3a3a3c;
 }
 
 .panel-catalogo {
-    -fx-background-color: #f7f7fa;
+    -fx-background-color: #eceef2;
 }
 
 .barra-inferior {
-    -fx-background-color: white;
-    -fx-border-color: #e5e5ea transparent transparent transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: #dfe0e4 transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
 }
 
 .combo-box, .text-field {
-    -fx-background-radius: 6;
-    -fx-border-radius: 6;
-    -fx-border-color: #d1d1d6;
+    -fx-background-color: #fbfbfa;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
 }
 
+.combo-box:focused, .text-field:focused {
+    -fx-border-color: #ff2f7e;
+}
+
+/* ---------- Lista de AFN: plana, sin zebra gris por defecto ---------- */
+
 .list-view {
-    -fx-background-color: white;
+    -fx-background-color: #fbfbfa;
+    -fx-background-radius: 6;
+    -fx-border-color: #dcdde1;
+    -fx-border-radius: 6;
+    -fx-padding: 2;
+}
+
+.list-view .list-cell {
+    -fx-background-color: #fbfbfa;
+    -fx-text-fill: #1c1c1e;
+    -fx-padding: 9 12 9 12;
+    -fx-border-color: transparent transparent #eceef0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #f0f1f4;
+}
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: #fbdce8;
+    -fx-text-fill: #1c1c1e;
+}
+
+/* ============================================================ */
+/* Barra de navegación superior: menú + pestañas comparten el    */
+/* mismo fondo oscuro para leerse como UNA sola franja continua, */
+/* en vez de bloques de color sueltos.                           */
+/* ============================================================ */
+
+.barra-nav-contenedor {
+    -fx-background-color: #1c1c1e;
+}
+
+.boton-burger {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
     -fx-background-radius: 8;
-    -fx-border-color: #e5e5ea;
-    -fx-border-radius: 8;
+    -fx-min-width: 38;
+    -fx-min-height: 38;
+    -fx-max-width: 38;
+    -fx-max-height: 38;
+    -fx-cursor: hand;
+}
+
+.boton-burger:hover {
+    -fx-background-color: #2c2c2e;
+}
+
+.pill-nav {
+    -fx-background-color: #2c2c2e;
+    -fx-background-radius: 999;
+    -fx-padding: 8 8 8 16;
+}
+
+.boton-nav-pill {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-radius: 999;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.boton-nav-pill:hover {
+    -fx-text-fill: #ff2f7e;
+}
+
+.boton-nav-pill-activo {
+    -fx-text-fill: #ff2f7e;
+    -fx-font-weight: 600;
+}
+
+.boton-cerrar-pill {
+    -fx-background-color: #3a3a3c;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-max-width: 32;
+    -fx-max-height: 32;
+    -fx-cursor: hand;
+}
+
+.boton-cerrar-pill:hover {
+    -fx-background-color: #4a4a4c;
+}
+
+/* ---------- Pestañas del hub AFN: siguen la misma franja oscura, ---------- */
+/* ---------- sin la "tarjeta" gris ni el cuadro azul de foco.     ---------- */
+
+.tabs-afn {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tabs-afn .tab-header-area {
+    -fx-background-color: #1c1c1e;
+    -fx-padding: 0 8 0 8;
+}
+
+.tabs-afn .tab-header-background {
+    -fx-background-color: #1c1c1e;
+}
+
+.tabs-afn .tab {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 3 0;
+    -fx-padding: 10 16 8 16;
+    -fx-effect: none;
+}
+
+.tabs-afn .tab:selected {
+    -fx-border-color: transparent transparent #ff2f7e transparent;
+}
+
+.tabs-afn .tab .tab-label {
+    -fx-text-fill: #9a9a9e;
+    -fx-font-size: 12px;
+}
+
+.tabs-afn .tab:hover .tab-label {
+    -fx-text-fill: white;
+}
+
+.tabs-afn .tab:selected .tab-label {
+    -fx-text-fill: #ff2f7e;
+    -fx-font-weight: 600;
+}
+
+.tabs-afn .tab-content-area {
+    -fx-background-color: #eceef2;
+}
+
+/* ---------- Icono de hamburguesa: 3 rayas reales, no un glifo de fuente ---------- */
+
+.raya-burger {
+    -fx-background-color: white;
+    -fx-background-radius: 1;
+    -fx-pref-width: 18;
+    -fx-pref-height: 2;
+    -fx-min-height: 2;
+    -fx-max-height: 2;
 }

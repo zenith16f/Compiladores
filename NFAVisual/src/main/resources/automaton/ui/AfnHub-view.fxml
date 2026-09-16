@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+
+<!--
+  Contenedor de todas las operaciones relacionadas con AFN: cada
+  pestaña carga una vista ya existente via fx:include. JavaFX inyecta
+  automaticamente el controlador de cada include en AfnHubController
+  usando el nombre "<fx:id>Controller" (ver AfnHubController.java).
+-->
+<TabPane xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         fx:controller="automaton.ui.AfnHubController"
+         tabClosingPolicy="UNAVAILABLE"
+         styleClass="tabs-afn">
+    <tabs>
+        <Tab text="Catálogo">
+            <fx:include fx:id="catalogo" source="AFN-view.fxml"/>
+        </Tab>
+        <Tab text="Ver AFN">
+            <fx:include source="VerAfn-view.fxml"/>
+        </Tab>
+        <Tab text="Unir">
+            <fx:include fx:id="unir" source="Unir-view.fxml"/>
+        </Tab>
+        <Tab text="Concatenar">
+            <fx:include fx:id="concatenar" source="Concatenar-view.fxml"/>
+        </Tab>
+        <Tab text="Cerraduras">
+            <fx:include fx:id="cerraduras" source="Cerraduras-view.fxml"/>
+        </Tab>
+        <Tab text="Opcional">
+            <fx:include fx:id="opcional" source="Opcional-view.fxml"/>
+        </Tab>
+    </tabs>
+</TabPane>
