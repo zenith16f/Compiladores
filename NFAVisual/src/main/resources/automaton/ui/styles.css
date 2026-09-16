@@ -224,3 +224,14 @@
     -fx-min-height: 2;
     -fx-max-height: 2;
 }
+
+/* ---------- Lienzo del grafico de AFN: sin el marco gris por defecto del ScrollPane ---------- */
+
+.scroll-grafico, .scroll-grafico .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-grafico {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}

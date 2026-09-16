@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import automaton.ui.LienzoAfn?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Placeholder: aqui se va a dibujar el grafico del AFN seleccionado (estados/transiciones). -->
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      spacing="8" alignment="CENTER" styleClass="panel-catalogo">
-    <padding>
-        <Insets top="40" right="24" bottom="24" left="24"/>
-    </padding>
-    <Label text="Ver AFN" styleClass="titulo"/>
-    <Label text="Pendiente: aqui se va a dibujar el grafico del automata seleccionado." styleClass="subtitulo"/>
-</VBox>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="automaton.ui.VerAfnController"
+            styleClass="raiz">
+
+    <top>
+        <VBox spacing="12" styleClass="barra-superior">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <Label text="Ver AFN" styleClass="titulo"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Autómata:"/>
+                <ComboBox fx:id="comboAfnVer" promptText="Selecciona un AFN" prefWidth="220"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane styleClass="panel-catalogo">
+            <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">
+                <content>
+                    <LienzoAfn fx:id="lienzo"/>
+                </content>
+            </ScrollPane>
+            <Label fx:id="etiquetaVacio" text="Selecciona un AFN para ver su gráfico" styleClass="subtitulo"/>
+        </StackPane>
+    </center>
+
+</BorderPane>
