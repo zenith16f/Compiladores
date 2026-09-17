@@ -12,6 +12,11 @@ public class Estado {
         this.estadoAccept = false;
         this.transiciones = new ArrayList<>();
     }
+    public Estado(int idEstado){
+        this.idEstado = idEstado;
+        this.estadoAccept = false;
+        this.transiciones = new ArrayList<>();
+    }
     
     // Getters and Setters
 
