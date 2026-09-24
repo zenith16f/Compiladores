@@ -1,26 +1,26 @@
 package automaton;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
 
 public class AFD {
     private ArrayList<Character> alfabeto;
-    private Estado estadoInicial;
     private ArrayList<Estado> estadosAccept;
     private ArrayList<Estado> estadosAFD;
     private int numEdos;
 
 
-    public AFD (){
+    public AFD() {
         this.alfabeto = new ArrayList<>();
         this.estadosAccept = new ArrayList<>();
-        this.estadosAFD= new ArrayList<>();
+        this.estadosAFD = new ArrayList<>();
     }
 
-    public AFD(ArrayList<Character> alfabeto, Estado estadoInicial,ArrayList<Estado> estadosAccept,ArrayList<Estado> estadosAFD ){
+    public AFD(ArrayList<Character> alfabeto,ArrayList<Estado> estadosAccept, ArrayList<Estado> estadosAFD) {
         this.alfabeto = alfabeto;
-        this.estadoInicial = estadoInicial;
         this.estadosAccept = estadosAccept;
-        this.estadosAFD =  estadosAFD;
+        this.estadosAFD = estadosAFD;
         this.numEdos = estadosAFD.size();
     }
 
@@ -31,14 +31,6 @@ public class AFD {
 
     public void setAlfabeto(ArrayList<Character> alfabeto) {
         this.alfabeto = alfabeto;
-    }
-
-    public Estado getEstadoInicial() {
-        return estadoInicial;
-    }
-
-    public void setEstadoInicial(Estado estadoInicial) {
-        this.estadoInicial = estadoInicial;
     }
 
     public ArrayList<Estado> getEstadosAccept() {
@@ -64,4 +56,5 @@ public class AFD {
     public void setNumEdos(int numEdos) {
         this.numEdos = numEdos;
     }
+
 }

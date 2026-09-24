@@ -12,12 +12,15 @@ public class Estado {
         this.estadoAccept = false;
         this.transiciones = new ArrayList<>();
     }
-    public Estado(int idEstado){
-        this.idEstado = idEstado;
+
+    public Estado(int i){
+        this.idEstado = i;
         this.estadoAccept = false;
         this.transiciones = new ArrayList<>();
     }
-    
+
+
+
     // Getters and Setters
 
     public int getIdEstado() {
@@ -39,7 +42,8 @@ public class Estado {
     public void setTransiciones(ArrayList<Transicion> transiciones) {
         this.transiciones = transiciones;
     }
-    
+    public void setTransicion(Transicion transicion) {this.transiciones.add(transicion);}
+
     // Override Methods
     @Override
     public String toString(){

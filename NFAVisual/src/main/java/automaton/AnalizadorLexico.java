@@ -4,6 +4,7 @@ package automaton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class AnalizadorLexico {
@@ -38,18 +39,27 @@ public class AnalizadorLexico {
 
         //lo que hacemos aquí es definir el afd que vamos a leer a partir de nuestra clase AFD
         AFD_lexic = new AFD();
+        AFD_lexic.setNumEdos(n);
         for(int i = 0; i<=255;i++){
             if (infAlfabeto[i] != -1) { //significa que ese carácter si está definido en nuestro afd
                 AFD_lexic.getAlfabeto().add((char) i);
             }
         }
-        AFD_lexic.setNumEdos(n);
-        //AFD_lexic.EdosAFD = new java.util.ArrayList<EdoAFD>();
-
+        AFD_lexic.setEstadosAFD(new ArrayList<Estado>());
         for (int i = 0; i < n; i++) { //n representa el numero de estados
-            Estado e =  new Estado(i);
-            AFD_lexic.getEstadosAFD().add() = i;
-            AFD_lexic.EdosAFD.get(i).Transiciones = new Transicion('a',null); //aqui hay que leer cada renglon de nuestro archivo para vaciar las transiciones aqui
+            int edoInicial = afdReader.next().charAt(1) - '0';
+            char sm1 = afdReader.next().charAt(0);
+            char sm2 = afdReader.next().charAt(0);
+            int edoDestino = afdReader.next().charAt(1) - '0';
+            if (AFD_lexic.getEstadosAFD().get(edoInicial) == null)
+                AFD_lexic.getEstadosAFD().add(new Estado());
+
+            if (AFD_lexic.getEstadosAFD().get(edoDestino) == null)
+                AFD_lexic.getEstadosAFD().add(new Estado());
+
+            Estado destino = AFD_lexic.getEstadosAFD().get(edoDestino);
+            AFD_lexic.getEstadosAFD().get(edoInicial).setTransicion(new Transicion(sm1,sm2,destino));
+
         }
         sigma="";
         pasoPorEdoAcep=false;
@@ -72,24 +82,34 @@ public class AnalizadorLexico {
 
         //lo que hacemos aquí es definir el afd que vamos a leer a partir de nuestra clase AFD
         AFD_lexic = new AFD();
+        AFD_lexic.setNumEdos(n);
         for(int i = 0; i<=255;i++){
             if (infAlfabeto[i] != -1) { //significa que ese carácter si está definido en nuestro afd
-                AFD_lexic.Alfabeto.add((char) i);
+                AFD_lexic.getAlfabeto().add((char) i);
             }
         }
-        AFD_lexic.numEdos = n;
-        AFD_lexic.EdosAFD = new java.util.ArrayList<EdoAFD>();
-
+        AFD_lexic.setEstadosAFD(new ArrayList<Estado>());
         for (int i = 0; i < n; i++) { //n representa el numero de estados
-            AFD_lexic.EdosAFD.get(i).idEDO = i;
-            AFD_lexic.EdosAFD.get(i).Transiciones = new Transicion('a',null); //aqui hay que leer cada renglon de nuestro archivo para vaciar las transiciones aqui
+            int edoInicial = afdReader.next().charAt(1) - '0';
+            char sm1 = afdReader.next().charAt(0);
+            char sm2 = afdReader.next().charAt(0);
+            int edoDestino = afdReader.next().charAt(1) - '0';
+            if (AFD_lexic.getEstadosAFD().get(edoInicial) == null)
+                AFD_lexic.getEstadosAFD().add(new Estado());
+
+            if (AFD_lexic.getEstadosAFD().get(edoDestino) == null)
+                AFD_lexic.getEstadosAFD().add(new Estado());
+
+            Estado destino = AFD_lexic.getEstadosAFD().get(edoDestino);
+            AFD_lexic.getEstadosAFD().get(edoInicial).setTransicion(new Transicion(sm1,sm2,destino));
+
         }
         sigma=cadenaAnalizar;
         indexCharAct=0;
-
     }
 
     //el analizador lexico siempre debe regresar 0 cuando ya no hay nada por revisar
+
     int yylex() //asi se llama en todos los compiladores, para llamarlo hay que tener ya cargado el automata y la cadena que quier revisar
     {
         pasoPorEdoAcep = false;
@@ -103,8 +123,8 @@ public class AnalizadorLexico {
         }
 
         while(indexCharAct < lenSigma){
-            edoAct = AFD_lexic.EdosAFD[edoAct].
-                    Transiciones[sigma.charAt(indexCharAct)];
+            edoAct = AFD_lexic.getEstadosAFD().get(edoAct).
+                    getTransiciones().get(0).isTransicion(sigma.charAt(indexCharAct)).getIdEstado();
 
             if(edoAct != -1) {//lo que significa que no es de aceptacion
                 if(AFD_lexic.EdoAFD[edoAct]).Transiciones[256] != -1 ){ //es de aceptacion?
