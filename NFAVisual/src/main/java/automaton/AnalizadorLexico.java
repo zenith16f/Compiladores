@@ -3,27 +3,13 @@ package automaton;
 /*
  * ============================================================
  * DESACTIVADO TEMPORALMENTE.
- *
- * Este archivo va a implementar el analizador lexico basado en un
- * AFD (yylex() al estilo lex/flex), pero el borrador original de
- * abajo fue escrito contra una clase "EdoAFD" (arreglos estilo C:
- * EdoAFD[], idEDO, Transiciones[]) que ya no existe en el proyecto:
- * se reemplazo por el AFD.java actual (ArrayList<Estado> + Sj.java,
- * ver AFN.convertir_AFN()). Ademas el borrador tenia errores de
- * sintaxis propios (parentesis mal cerrado en el yylex() original).
- *
- * Por eso esta clase se deja como cascaron vacio: no hace nada, pero
- * tampoco rompe la compilacion. El codigo viejo se dejo comentado
- * (linea por linea, no en un bloque, para no chocar con el "* /"
- * que ya traia el propio borrador) mas abajo como referencia, para
- * cuando se reescriba usando la API nueva de AFD/Estado.
- *
+ 
  * TODO: reimplementar AnalizadorLexico usando AFD (ArrayList<Estado>)
- * en vez de EdoAFD[].
+ 
  * ============================================================
  */
 public class AnalizadorLexico {
-    // Pendiente: sin implementar todavia (ver nota arriba).
+    
 }
 
 // ------------------------------------------------------------

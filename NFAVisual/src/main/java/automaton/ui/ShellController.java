@@ -11,17 +11,6 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-/**
- * Controlador de la ventana unica (el "shell"): nunca se destruye,
- * solo intercambia lo que hay dentro de areaContenido cada vez que
- * el usuario navega, en vez de abrir Stage nuevos por cada pantalla.
- *
- * El menu principal solo tiene los tres grandes conjuntos del
- * proyecto: AFN (que por dentro tiene sus propias pestanas para
- * Catalogo/Unir/Concatenar/Cerraduras, ver AfnHubController), AFN -> AFD
- * y Unir para Lexico. El menu es una pastilla horizontal oscura que
- * se despliega junto al boton hamburguesa (estilo "OpenMenu").
- */
 public class ShellController {
 
     @FXML private StackPane contenedorBurger;
