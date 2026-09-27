@@ -5,29 +5,61 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.CheckListView?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="automaton.ui.UnirController"
-      spacing="16" styleClass="panel-catalogo">
+      spacing="14" styleClass="panel-catalogo">
     <padding>
         <Insets top="24" right="24" bottom="24" left="24"/>
     </padding>
 
+    <fx:define>
+        <ToggleGroup fx:id="modoUnir"/>
+    </fx:define>
+
     <Label text="Unir AFN" styleClass="titulo"/>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="AFN a unir:"/>
-        <ComboBox fx:id="comboAfnUno" promptText="AFN 1" prefWidth="180"/>
-        <ComboBox fx:id="comboAfnDos" promptText="AFN 2" prefWidth="180"/>
+    <HBox spacing="4" styleClass="contenedor-segmento">
+        <ToggleButton fx:id="toggleUnirDos" text="Unir 2" toggleGroup="$modoUnir" selected="true"
+                      onAction="#onCambiarModo" styleClass="boton-segmento"/>
+        <ToggleButton fx:id="toggleUnirVarios" text="Unir varios" toggleGroup="$modoUnir"
+                      onAction="#onCambiarModo" styleClass="boton-segmento"/>
     </HBox>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Nombre del resultado:"/>
-        <TextField fx:id="campoNombreResultado" promptText="opcional" prefWidth="180"/>
-        <Button text="Unir" onAction="#onUnir" styleClass="boton-primario"/>
-    </HBox>
+    <StackPane VBox.vgrow="ALWAYS">
+
+        <!-- Modo "Unir 2": el flujo original con dos combos. -->
+        <VBox fx:id="panelUnirDos" spacing="12">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="AFN a unir:"/>
+                <ComboBox fx:id="comboAfnUno" promptText="AFN 1" prefWidth="180"/>
+                <ComboBox fx:id="comboAfnDos" promptText="AFN 2" prefWidth="180"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Nombre del resultado:"/>
+                <TextField fx:id="campoNombreResultadoDos" promptText="opcional" prefWidth="180"/>
+                <Button text="Unir" onAction="#onUnirDos" styleClass="boton-primario"/>
+            </HBox>
+        </VBox>
+
+        <!-- Modo "Unir varios": checkboxes para marcar 2 o mas AFN. -->
+        <VBox fx:id="panelUnirVarios" spacing="12" visible="false" managed="false">
+            <Label text="Marca dos o más AFN de la lista para unirlos en uno solo." styleClass="subtitulo"/>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Nombre del resultado:"/>
+                <TextField fx:id="campoNombreResultadoVarios" promptText="opcional" prefWidth="180"/>
+                <Button text="Unir seleccionados" onAction="#onUnirVarios" styleClass="boton-primario"/>
+            </HBox>
+            <CheckListView fx:id="listaAfnUnir" styleClass="lista-checks" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+    </StackPane>
 
 </VBox>

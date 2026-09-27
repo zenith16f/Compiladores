@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -31,14 +33,26 @@
     </top>
 
     <center>
-        <StackPane styleClass="panel-catalogo">
-            <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">
-                <content>
-                    <LienzoAfn fx:id="lienzo"/>
-                </content>
-            </ScrollPane>
-            <Label fx:id="etiquetaVacio" text="Selecciona un AFN para ver su gráfico" styleClass="subtitulo"/>
-        </StackPane>
+        <SplitPane dividerPositions="0.68" orientation="HORIZONTAL" styleClass="split-ver-afn">
+            <items>
+                <StackPane styleClass="panel-catalogo">
+                    <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">
+                        <content>
+                            <LienzoAfn fx:id="lienzo"/>
+                        </content>
+                    </ScrollPane>
+                    <Label fx:id="etiquetaVacio" text="Selecciona un AFN para ver su gráfico" styleClass="subtitulo"/>
+                </StackPane>
+
+                <VBox spacing="8" styleClass="panel-catalogo" minWidth="220">
+                    <padding>
+                        <Insets top="12" right="12" bottom="16" left="12"/>
+                    </padding>
+                    <Label text="Tabla de transiciones" styleClass="subtitulo"/>
+                    <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS"/>
+                </VBox>
+            </items>
+        </SplitPane>
     </center>
 
 </BorderPane>
