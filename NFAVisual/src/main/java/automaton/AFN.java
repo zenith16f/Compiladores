@@ -160,6 +160,13 @@ public class AFN {
         // Construcción de S0
         Set<Estado> s0Edos = cerradura_e(this.estadoInicial);
         Estado s0 = new Estado(numConjSj);
+        if (esEstadoDeAceptacion(s0Edos, this.estadosAccept)) {
+            // El AFN acepta la cadena vacia (la cerradura-e del estado
+            // inicial ya toca un estado de aceptacion), asi que S0 en
+            // el AFD tambien debe quedar marcado como de aceptacion.
+            s0.setEstadoAccept(true);
+            edosAcept.add(s0);
+        }
         Sj sjAux = new Sj(numConjSj++, s0Edos,s0);
 
         conjSjSinAnalizar.add(sjAux);
@@ -168,9 +175,12 @@ public class AFN {
         while (!conjSjSinAnalizar.isEmpty()) {
             sjAux = conjSjSinAnalizar.poll();
 
-            Estado edojAFD = new Estado(sjAux.id);
-
-
+            // Reutilizamos el Estado que ya quedo guardado en el Sj (al que
+            // ya apuntan las transiciones de otros estados) en vez de crear
+            // uno nuevo: si se crea uno nuevo aqui, sus transiciones salientes
+            // se agregan a un objeto distinto del que el resto del AFD ya
+            // tiene como destino, y el grafo queda desconectado.
+            Estado edojAFD = sjAux.edoAFD;
 
             for (char simb : this.alfabeto) {
                 Set<Estado> sjTempEdos = ir_a(sjAux.edos, simb);
@@ -200,8 +210,9 @@ public class AFN {
 
         }
 
-
-        return new AFD(this.alfabeto, edosAcept,(ArrayList<Estado>) edosAFD);
+        AFD afd = new AFD(this.alfabeto, edosAcept,(ArrayList<Estado>) edosAFD);
+        afd.setEstadoInicial(s0);
+        return afd;
     }
 
     public Set<Estado> cerradura_e(Estado estadoInicial){

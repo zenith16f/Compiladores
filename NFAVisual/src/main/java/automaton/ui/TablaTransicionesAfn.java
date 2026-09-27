@@ -1,5 +1,6 @@
 package automaton.ui;
 
+import automaton.AFD;
 import automaton.AFN;
 import automaton.Estado;
 import automaton.Transicion;
@@ -40,10 +41,23 @@ public final class TablaTransicionesAfn {
     }
 
     public static void poblar(TableView<Fila> tabla, AFN afn) {
+        poblar(tabla, afn == null ? null : afn.getEstadoInicial(), afn == null ? null : afn.getEstadosAFN());
+    }
+
+    /**
+     * Misma tabla, pero para un AFD (reutiliza el mismo motor: un AFD
+     * tambien es, para estos efectos, un estado inicial + una lista de
+     * Estado con sus transiciones).
+     */
+    public static void poblarAfd(TableView<Fila> tabla, AFD afd) {
+        poblar(tabla, afd == null ? null : afd.getEstadoInicial(), afd == null ? null : afd.getEstadosAFD());
+    }
+
+    public static void poblar(TableView<Fila> tabla, Estado estadoInicial, List<Estado> estados) {
         tabla.getColumns().clear();
         tabla.getItems().clear();
 
-        if (afn == null || afn.getEstadoInicial() == null) {
+        if (estadoInicial == null || estados == null) {
             return;
         }
 
@@ -51,7 +65,7 @@ public final class TablaTransicionesAfn {
 
         TableColumn<Fila, String> columnaEstado = new TableColumn<>("Estado");
         columnaEstado.setCellValueFactory(datos -> new ReadOnlyStringWrapper(datos.getValue().getEstado()));
-     
+
         columnaEstado.setMinWidth(52);
         columnaEstado.setPrefWidth(58);
         columnaEstado.setMaxWidth(64);
@@ -63,7 +77,7 @@ public final class TablaTransicionesAfn {
 
         TreeSet<String> simbolos = new TreeSet<>();
         boolean hayEpsilon = false;
-        for (Estado estado : afn.getEstadosAFN()) {
+        for (Estado estado : estados) {
             for (Transicion transicion : estado.getTransiciones()) {
                 if (transicion.IsEpsilon()) {
                     hayEpsilon = true;
@@ -81,7 +95,7 @@ public final class TablaTransicionesAfn {
         }
 
         List<Fila> filas = new ArrayList<>();
-        for (Estado estado : afn.getEstadosAFN()) {
+        for (Estado estado : estados) {
             Map<String, List<String>> destinosPorSimbolo = new HashMap<>();
             for (Transicion transicion : estado.getTransiciones()) {
                 String clave = transicion.IsEpsilon() ? "ε" : etiquetaSimbolo(transicion);
@@ -95,7 +109,7 @@ public final class TablaTransicionesAfn {
                 celdas.put(entrada.getKey(), String.join(", ", entrada.getValue()));
             }
 
-            String etiquetaEstado = (estado == afn.getEstadoInicial() ? "→" : "")
+            String etiquetaEstado = (estado == estadoInicial ? "→" : "")
                     + "q" + estado.getIdEstado()
                     + (estado.isEstadoAccept() ? "*" : "");
             filas.add(new Fila(etiquetaEstado, celdas));

@@ -1,5 +1,6 @@
 package automaton.ui;
 
+import automaton.AFD;
 import automaton.AFN;
 import automaton.Estado;
 import automaton.Transicion;
@@ -41,24 +42,42 @@ public class LienzoAfn extends Pane {
      * Dibuja el AFN dado. Pasar null limpia el lienzo (pantalla vacia).
      */
     public void dibujar(AFN afn) {
+        dibujar(afn == null ? null : afn.getEstadoInicial(), afn == null ? null : afn.getEstadosAFN());
+    }
+
+    /**
+     * Dibuja el AFD dado (mismo motor de dibujo que el AFN, ya que un AFD
+     * tambien es, para efectos de layout, un grafo de Estado). Pasar null
+     * limpia el lienzo (pantalla vacia).
+     */
+    public void dibujarAfd(AFD afd) {
+        dibujar(afd == null ? null : afd.getEstadoInicial(), afd == null ? null : afd.getEstadosAFD());
+    }
+
+    /**
+     * Motor de dibujo comun: no le importa si los estados vienen de un AFN
+     * o de un AFD, solo necesita el estado inicial y la lista completa de
+     * estados a dibujar.
+     */
+    public void dibujar(Estado estadoInicial, List<Estado> estados) {
         getChildren().clear();
 
-        if (afn == null || afn.getEstadoInicial() == null || afn.getEstadosAFN().isEmpty()) {
+        if (estadoInicial == null || estados == null || estados.isEmpty()) {
             setPrefSize(0, 0);
             return;
         }
 
-        Map<Estado, Integer> capas = calcularCapas(afn);
-        Map<Integer, List<Estado>> columnas = agruparPorColumna(afn, capas);
+        Map<Estado, Integer> capas = calcularCapas(estadoInicial, estados);
+        Map<Integer, List<Estado>> columnas = agruparPorColumna(estados, capas);
         Map<Estado, double[]> posiciones = calcularPosiciones(columnas);
 
-        double[] posInicial = posiciones.get(afn.getEstadoInicial());
+        double[] posInicial = posiciones.get(estadoInicial);
         dibujarEntradaInicial(posInicial[0], posInicial[1]);
 
         // Las transiciones se dibujan antes que los estados para que
         // los circulos de los estados queden siempre encima de las lineas.
         Map<String, Integer> contadorParejas = new HashMap<>();
-        for (Estado origen : afn.getEstadosAFN()) {
+        for (Estado origen : estados) {
             double[] posOrigen = posiciones.get(origen);
             if (posOrigen == null) {
                 continue;
@@ -81,10 +100,10 @@ public class LienzoAfn extends Pane {
             }
         }
 
-        for (Estado estado : afn.getEstadosAFN()) {
+        for (Estado estado : estados) {
             double[] pos = posiciones.get(estado);
             if (pos != null) {
-                dibujarEstado(pos[0], pos[1], estado, estado == afn.getEstadoInicial());
+                dibujarEstado(pos[0], pos[1], estado, estado == estadoInicial);
             }
         }
 
@@ -96,12 +115,12 @@ public class LienzoAfn extends Pane {
 
     // ---------- Layout ----------
 
-    private Map<Estado, Integer> calcularCapas(AFN afn) {
+    private Map<Estado, Integer> calcularCapas(Estado estadoInicial, List<Estado> estados) {
         Map<Estado, Integer> capas = new HashMap<>();
         Deque<Estado> cola = new ArrayDeque<>();
 
-        capas.put(afn.getEstadoInicial(), 0);
-        cola.add(afn.getEstadoInicial());
+        capas.put(estadoInicial, 0);
+        cola.add(estadoInicial);
 
         while (!cola.isEmpty()) {
             Estado actual = cola.poll();
@@ -118,16 +137,16 @@ public class LienzoAfn extends Pane {
         // Por si algun estado quedara inalcanzable desde el inicial
         // (no deberia pasar con Thompson, pero evita que se pierda del dibujo).
         int capaExtra = capas.values().stream().mapToInt(Integer::intValue).max().orElse(0) + 1;
-        for (Estado estado : afn.getEstadosAFN()) {
+        for (Estado estado : estados) {
             capas.putIfAbsent(estado, capaExtra);
         }
 
         return capas;
     }
 
-    private Map<Integer, List<Estado>> agruparPorColumna(AFN afn, Map<Estado, Integer> capas) {
+    private Map<Integer, List<Estado>> agruparPorColumna(List<Estado> estados, Map<Estado, Integer> capas) {
         Map<Integer, List<Estado>> columnas = new TreeMap<>();
-        for (Estado estado : afn.getEstadosAFN()) {
+        for (Estado estado : estados) {
             columnas.computeIfAbsent(capas.get(estado), k -> new ArrayList<>()).add(estado);
         }
         return columnas;

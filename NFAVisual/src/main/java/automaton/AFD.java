@@ -8,6 +8,7 @@ public class AFD {
     private ArrayList<Character> alfabeto;
     private ArrayList<Estado> estadosAccept;
     private ArrayList<Estado> estadosAFD;
+    private Estado estadoInicial;
     private int numEdos;
 
 
@@ -55,6 +56,14 @@ public class AFD {
 
     public void setNumEdos(int numEdos) {
         this.numEdos = numEdos;
+    }
+
+    public Estado getEstadoInicial() {
+        return estadoInicial;
+    }
+
+    public void setEstadoInicial(Estado estadoInicial) {
+        this.estadoInicial = estadoInicial;
     }
 
 }
