@@ -1,6 +1,6 @@
 package automaton;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class AFN {
     private ArrayList<Character> alfabeto;
@@ -140,6 +140,115 @@ public class AFN {
 
         return this;
     }
+
+    public boolean esEstadoDeAceptacion(Set<Estado> conjuntoSj, ArrayList<Estado> estadosFinalesAFN) {
+        for (Estado e : conjuntoSj) {
+            if (estadosFinalesAFN.contains(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AFD convertir_AFN() {
+        int numConjSj = 0;
+        Queue<Sj> conjSjSinAnalizar = new ArrayDeque<>();
+        List<Sj> conjTodosSj = new ArrayList<>();
+        List<Estado> edosAFD = new ArrayList<>();
+        ArrayList<Estado> edosAcept = new ArrayList<>();
+
+        // Construcción de S0
+        Set<Estado> s0Edos = cerradura_e(this.estadoInicial);
+        Estado s0 = new Estado(numConjSj);
+        Sj sjAux = new Sj(numConjSj++, s0Edos,s0);
+
+        conjSjSinAnalizar.add(sjAux);
+        conjTodosSj.add(sjAux);
+
+        while (!conjSjSinAnalizar.isEmpty()) {
+            sjAux = conjSjSinAnalizar.poll();
+
+            Estado edojAFD = new Estado(sjAux.id);
+
+
+
+            for (char simb : this.alfabeto) {
+                Set<Estado> sjTempEdos = ir_a(sjAux.edos, simb);
+                if (sjTempEdos.isEmpty()) {
+                    continue;
+                }
+                Sj edoExist = buscarSj(conjTodosSj, sjTempEdos);
+
+                if (edoExist == null) { // Es nuevo
+                    Estado edoAFDnuevo = new Estado(numConjSj);
+                    if (esEstadoDeAceptacion(sjTempEdos, this.estadosAccept)) {
+                        edoAFDnuevo.setEstadoAccept(true);
+                        edosAcept.add(edoAFDnuevo);
+                    }
+
+                    Sj sjTemp = new Sj(numConjSj++, sjTempEdos,edoAFDnuevo);
+                    conjTodosSj.add(sjTemp);
+                    conjSjSinAnalizar.add(sjTemp);
+                    edojAFD.setTransicion(new Transicion(simb, edoAFDnuevo));
+                } else { // Ya existe
+                    edojAFD.setTransicion(new Transicion(simb,edoExist.edoAFD));
+                }
+
+            }
+
+            edosAFD.add(edojAFD);
+
+        }
+
+
+        return new AFD(this.alfabeto, edosAcept,(ArrayList<Estado>) edosAFD);
+    }
+
+    public Set<Estado> cerradura_e(Estado estadoInicial){
+        Set<Estado> r = new LinkedHashSet<>();
+        Deque<Estado> s = new ArrayDeque<Estado>();
+        s.push(estadoInicial);
+        while(!s.isEmpty()){
+            Estado aux = s.pop();
+            r.add(aux);
+            for(Transicion t : aux.getTransiciones()){
+                if(t.IsEpsilon()){
+                    if (!r.contains(t.getEstadoDestino()))
+                        s.push(t.getEstadoDestino());
+                }
+            }
+        }
+
+        return r;
+    }
+    public Set<Estado> mover_a(char simbolo, Estado estadoInicial){
+        Set<Estado> r = new LinkedHashSet<Estado>();
+        for(Transicion t : estadoInicial.getTransiciones())
+            if ( simbolo >= t.getSimboloInferior() && simbolo <= t.getSimboloSuperior() )
+                r.add(t.getEstadoDestino());
+
+        return r;
+    }
+
+    public Set<Estado> ir_a(Set<Estado> c, char simbolo){
+        Set<Estado> r = new LinkedHashSet<>();
+        for (Estado e : c ) {
+            for (Estado ef : mover_a(simbolo,e)) {
+                r.addAll(cerradura_e(ef));
+            }
+        }
+        return r;
+    }
+
+    public Sj buscarSj(List<Sj> conjTodosSj, Set<Estado> sjTempEdos) {
+        for (Sj sj : conjTodosSj) {
+            if (sj.edos.equals(sjTempEdos)) {
+                return sj;
+            }
+        }
+        return null;
+    }
+
 
     // Getters and Setters
     public ArrayList<Character> getAlfabeto() {
