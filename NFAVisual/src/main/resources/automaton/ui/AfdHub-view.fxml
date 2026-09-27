@@ -3,13 +3,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 
-<!--
-  Contenedor de todo lo relacionado con AFD: por ahora solo el listado
-  (placeholder, sin guardado todavia) y la conversion AFN -> AFD. Mismo
-  patron que AfnHub-view.fxml: cada pestaña carga una vista existente
-  via fx:include, y JavaFX inyecta el controlador de cada include en
-  AfdHubController usando "<fx:id>Controller" (ver AfdHubController.java).
--->
+
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="automaton.ui.AfdHubController"
