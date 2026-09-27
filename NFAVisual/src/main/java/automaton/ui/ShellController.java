@@ -17,7 +17,7 @@ public class ShellController {
     @FXML private Button botonBurger;
     @FXML private HBox pillNav;
     @FXML private Button botonNavAfn;
-    @FXML private Button botonNavConvertirAfd;
+    @FXML private Button botonNavAfd;
     @FXML private Button botonNavUnirLexico;
     @FXML private StackPane areaContenido;
 
@@ -56,9 +56,9 @@ public class ShellController {
     }
 
     @FXML
-    private void onNavConvertirAfd() {
-        mostrarVista("ConvertirAFD-view.fxml");
-        marcarActivo(botonNavConvertirAfd);
+    private void onNavAfd() {
+        mostrarVista("AfdHub-view.fxml");
+        marcarActivo(botonNavAfd);
         cerrarMenuSiAbierto();
     }
 
@@ -76,7 +76,7 @@ public class ShellController {
     }
 
     private void marcarActivo(Button activo) {
-        for (Button boton : new Button[]{botonNavAfn, botonNavConvertirAfd, botonNavUnirLexico}) {
+        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavUnirLexico}) {
             boton.getStyleClass().remove("boton-nav-pill-activo");
         }
         activo.getStyleClass().add("boton-nav-pill-activo");
