@@ -1,8 +1,7 @@
 package automaton;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class AFD {
     private ArrayList<Character> alfabeto;
@@ -23,6 +22,31 @@ public class AFD {
         this.estadosAccept = estadosAccept;
         this.estadosAFD = estadosAFD;
         this.numEdos = estadosAFD.size();
+    }
+
+
+    public void imprimirAFD() throws IOException {
+       File file = new File("AFD.txt");
+        if(!file.createNewFile())
+            System.out.println("El archivo ya existe");
+
+        try(PrintWriter writer = new PrintWriter(file)){
+            for(char c : getAlfabeto()) {
+                writer.print(c + " ");
+            }
+            writer.println();
+            for (Estado estado : getEstadosAFD()){
+                Map<Character, Integer> map = new HashMap<>();
+                for (Transicion t : estado.getTransiciones())
+                    map.put(t.getSimboloInferior(),t.getEstadoDestino().getIdEstado());
+
+                for (char c : getAlfabeto())
+                    writer.print(map.get(c));
+
+                writer.println();
+            }
+
+        }
     }
 
 
