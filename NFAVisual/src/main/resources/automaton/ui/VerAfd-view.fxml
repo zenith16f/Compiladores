@@ -2,13 +2,11 @@
 
 <?import automaton.ui.LienzoAfn?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -16,7 +14,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="automaton.ui.ConvertirAFDController"
+            fx:controller="automaton.ui.VerAfdController"
             styleClass="raiz">
 
     <top>
@@ -25,13 +23,11 @@
                 <Insets top="16" right="16" bottom="16" left="16"/>
             </padding>
 
-            <Label text="AFN → AFD" styleClass="titulo"/>
+            <Label text="Ver AFD" styleClass="titulo"/>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="AFN de origen:"/>
-                <ComboBox fx:id="comboAfnOrigen" promptText="Selecciona un AFN" prefWidth="220"/>
-                <TextField fx:id="campoNombreAfd" promptText="Nombre del AFD (opcional)" prefWidth="200"/>
-                <Button text="Guardar AFD" onAction="#onGuardarAfd" styleClass="boton-primario"/>
+                <Label text="Autómata:"/>
+                <ComboBox fx:id="comboAfdVer" promptText="Selecciona un AFD" prefWidth="220"/>
             </HBox>
         </VBox>
     </top>
@@ -45,15 +41,14 @@
                             <LienzoAfn fx:id="lienzo"/>
                         </content>
                     </ScrollPane>
-                    <Label fx:id="etiquetaVacio" text="Selecciona un AFN para convertirlo a AFD"
-                           styleClass="subtitulo"/>
+                    <Label fx:id="etiquetaVacio" text="Selecciona un AFD para ver su gráfico" styleClass="subtitulo"/>
                 </StackPane>
 
                 <VBox spacing="8" styleClass="panel-catalogo" minWidth="220">
                     <padding>
                         <Insets top="12" right="12" bottom="16" left="12"/>
                     </padding>
-                    <Label text="Tabla de transiciones (AFD)" styleClass="subtitulo"/>
+                    <Label text="Tabla de transiciones" styleClass="subtitulo"/>
                     <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </items>

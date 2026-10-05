@@ -2,14 +2,16 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
 
-<!-- Placeholder: aqui va a aparecer el catalogo de AFD ya guardados (aun no hay forma de guardarlos). -->
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      spacing="8" alignment="CENTER" styleClass="panel-catalogo">
+      fx:controller="automaton.ui.ListadoAFDController"
+      spacing="8" styleClass="panel-catalogo">
     <padding>
-        <Insets top="40" right="24" bottom="24" left="24"/>
+        <Insets top="16" right="16" bottom="16" left="16"/>
     </padding>
-    <Label text="Listado de AFD" styleClass="titulo"/>
-    <Label text="Pendiente: aqui van a aparecer los AFD guardados." styleClass="subtitulo"/>
+
+    <Label text="AFD guardados" styleClass="titulo"/>
+    <ListView fx:id="listaAfd" VBox.vgrow="ALWAYS"/>
 </VBox>
