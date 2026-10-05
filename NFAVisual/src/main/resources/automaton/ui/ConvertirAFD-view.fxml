@@ -54,7 +54,11 @@
                         <Insets top="12" right="12" bottom="16" left="12"/>
                     </padding>
                     <Label text="Tabla de transiciones (AFD)" styleClass="subtitulo"/>
-                    <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS"/>
+                    <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Selecciona un AFN para ver la tabla del AFD" styleClass="subtitulo"/>
+                        </placeholder>
+                    </TableView>
                 </VBox>
             </items>
         </SplitPane>

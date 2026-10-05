@@ -3,7 +3,6 @@ package automaton.ui;
 import automaton.EntradaAFN;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -33,13 +32,17 @@ public class ConcatenarController implements VistaConContexto {
             return;
         }
 
-        gestor.Concatenacion(uno.getId(), dos.getId(), nombreResultado);
+        String nombreUno = uno.getNombre();
+        String nombreDos = dos.getNombre();
+        int id = gestor.Concatenacion(uno.getId(), dos.getId(), nombreResultado);
+        Avisos.info("Concatenación realizada", "Se concatenaron '" + nombreUno + "' y '" + nombreDos
+                + "'. Resultado: '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         comboAfnUno.setValue(null);
         comboAfnDos.setValue(null);
         campoNombreResultado.clear();
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }

@@ -5,11 +5,12 @@ import automaton.EntradaAFN;
 import automaton.GestorAFD;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+
+import java.io.IOException;
 
 
 public class ConvertirAFDController implements VistaConContexto {
@@ -53,8 +54,23 @@ public class ConvertirAFDController implements VistaConContexto {
             nombre = "AFD de " + origen.getNombre();
         }
 
-        gestorAfd.Registrar(afdActual, nombre.trim());
+        nombre = nombre.trim();
+        if (gestorAfd.ObtenerPorNombre(nombre) != null) {
+            mostrarAviso("Ya existe un AFD llamado '" + nombre + "'. Escribe otro nombre.");
+            return;
+        }
+
+        int id = gestorAfd.Registrar(afdActual, nombre);
+        try {
+            gestorAfd.guardarEnArchivo(id);
+        } catch (IOException | RuntimeException e) {
+            // Queda en memoria aunque falle el archivo; se avisa para que no se pierda en silencio
+            Avisos.error("El AFD se registró, pero no se pudo guardar el archivo: " + e.getMessage());
+            campoNombreAfd.clear();
+            return;
+        }
         campoNombreAfd.clear();
+        Avisos.info("AFD guardado", "Se guardó el AFD '" + nombre + "'. Ya aparece en el listado.");
     }
 
     private void actualizarVista(EntradaAFN seleccion) {
@@ -66,6 +82,6 @@ public class ConvertirAFDController implements VistaConContexto {
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }

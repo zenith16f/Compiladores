@@ -17,7 +17,7 @@ public class AFD {
         this.estadosAFD = new ArrayList<>();
     }
 
-    public AFD(ArrayList<Character> alfabeto,ArrayList<Estado> estadosAccept, ArrayList<Estado> estadosAFD) {
+    public AFD(ArrayList<Character> alfabeto, ArrayList<Estado> estadosAccept, ArrayList<Estado> estadosAFD) {
         this.alfabeto = alfabeto;
         this.estadosAccept = estadosAccept;
         this.estadosAFD = estadosAFD;
@@ -26,27 +26,7 @@ public class AFD {
 
 
     public void imprimirAFD() throws IOException {
-       File file = new File("AFD.txt");
-        if(!file.createNewFile())
-            System.out.println("El archivo ya existe");
-
-        try(PrintWriter writer = new PrintWriter(file)){
-            for(char c : getAlfabeto()) {
-                writer.print(c + " ");
-            }
-            writer.println();
-            for (Estado estado : getEstadosAFD()){
-                Map<Character, Integer> map = new HashMap<>();
-                for (Transicion t : estado.getTransiciones())
-                    map.put(t.getSimboloInferior(),t.getEstadoDestino().getIdEstado());
-
-                for (char c : getAlfabeto())
-                    writer.print(map.get(c));
-
-                writer.println();
-            }
-
-        }
+        new AlmacenAutomatas(java.nio.file.Paths.get(".")).exportarAfdParaLexico(this, "AFD");
     }
 
 

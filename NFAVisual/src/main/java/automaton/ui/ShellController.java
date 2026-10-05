@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -20,12 +21,14 @@ public class ShellController {
     @FXML private Button botonNavAfd;
     @FXML private Button botonNavUnirLexico;
     @FXML private StackPane areaContenido;
+    @FXML private VBox contenedorToasts;
 
     private final AppContext contexto = new AppContext();
     private boolean menuAbierto = false;
 
     @FXML
     public void initialize() {
+        Toasts.instalar(contenedorToasts);
         mostrarVista("AfnHub-view.fxml");
         marcarActivo(botonNavAfn);
     }
