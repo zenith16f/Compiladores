@@ -3,18 +3,20 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 
-
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="automaton.ui.AfdHubController"
          tabClosingPolicy="UNAVAILABLE"
          styleClass="tabs-afn">
     <tabs>
-        <Tab text="Listado">
-            <fx:include source="ListadoAFD-view.fxml"/>
-        </Tab>
         <Tab text="AFN → AFD">
             <fx:include fx:id="convertir" source="ConvertirAFD-view.fxml"/>
+        </Tab>
+        <Tab text="Listado">
+            <fx:include fx:id="listado" source="ListadoAFD-view.fxml"/>
+        </Tab>
+        <Tab text="Ver AFD">
+            <fx:include fx:id="verAfd" source="VerAfd-view.fxml"/>
         </Tab>
     </tabs>
 </TabPane>

@@ -38,7 +38,11 @@
                 <Insets top="8" right="16" bottom="16" left="16"/>
             </padding>
             <Label text="AFN registrados" styleClass="subtitulo"/>
-            <ListView fx:id="listaAfn" VBox.vgrow="ALWAYS"/>
+            <ListView fx:id="listaAfn" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <Label text="No hay AFN registrados. Crea uno con «Crear AFN»." styleClass="subtitulo"/>
+                </placeholder>
+            </ListView>
         </VBox>
     </center>
 
@@ -49,6 +53,7 @@
             </padding>
             <TextField fx:id="campoNuevoNombre" promptText="Nuevo nombre" prefWidth="220"/>
             <Button text="Renombrar seleccionado" onAction="#onRenombrar" styleClass="boton-secundario"/>
+            <Button text="Eliminar seleccionado" onAction="#onEliminar" styleClass="boton-secundario"/>
         </HBox>
     </bottom>
 

@@ -44,7 +44,17 @@
     </top>
 
     <center>
-        <StackPane fx:id="areaContenido"/>
+        <StackPane>
+            <StackPane fx:id="areaContenido"/>
+
+            <!-- Capa de toasts: encima del contenido, no estorba los clics fuera de las tarjetas -->
+            <VBox fx:id="contenedorToasts" alignment="BOTTOM_RIGHT" spacing="8" pickOnBounds="false"
+                  maxWidth="-Infinity" maxHeight="-Infinity" StackPane.alignment="BOTTOM_RIGHT">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+            </VBox>
+        </StackPane>
     </center>
 
 </BorderPane>

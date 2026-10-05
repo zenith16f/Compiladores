@@ -3,7 +3,6 @@ package automaton.ui;
 import automaton.EntradaAFN;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -42,15 +41,19 @@ public class CerradurasController implements VistaConContexto {
         }
 
         int id = seleccion.getId();
-        switch (operacion) {
+        String nombreOriginal = seleccion.getNombre();
+        int idResultado = switch (operacion) {
             case KLEENE -> gestor.CerraduraKleene(id, nombreResultado);
             case POSITIVA -> gestor.Positiva(id, nombreResultado);
-        }
+            default -> throw new IllegalStateException("Operación desconocida: " + operacion);
+        };
+        Avisos.info("Operación realizada", "Se aplicó '" + operacion + "' a '" + nombreOriginal
+                + "'. Resultado: '" + gestor.ObtenerEntrada(idResultado).getNombre() + "'.");
 
         campoNombreResultado.clear();
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }

@@ -357,3 +357,60 @@
 .table-view .column-header.columna-estado .label {
     -fx-text-fill: #ff2f7e;
 }
+
+/* ---------- Toasts (notificaciones) ---------- */
+
+.toast {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #e4e5e9;
+    -fx-border-radius: 8;
+    -fx-padding: 12 14 12 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 16, 0.1, 0, 4);
+    -fx-cursor: hand;
+}
+
+.toast-titulo {
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1c1c1e;
+}
+
+.toast-descripcion {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #6e6e73;
+}
+
+.toast-icono {
+    -fx-min-width: 20;
+    -fx-min-height: 20;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+    -fx-background-radius: 10;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.toast-exito { -fx-background-color: #16a34a; }
+.toast-aviso { -fx-background-color: #d97706; }
+.toast-error { -fx-background-color: #dc2626; }
+
+/* ---------- Ventanas emergentes (solo confirmaciones) ---------- */
+
+.dialog-pane {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    -fx-background-color: #fbfbfa;
+}
+
+.dialog-pane .button:default {
+    -fx-background-color: #ff2f7e;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .button:default:hover {
+    -fx-background-color: #e0266b;
+}

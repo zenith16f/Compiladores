@@ -4,7 +4,6 @@ import automaton.AFN;
 import automaton.EntradaAFN;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -52,7 +51,13 @@ public class PrincipalController implements VistaConContexto {
             nuevo = AFN.CreateAFN(inferior, superior);
         }
 
-        gestor.Registrar(nuevo, nombre);
+        if (nombre != null && !nombre.isBlank() && gestor.ExisteNombre(nombre)) {
+            mostrarAviso("Ya existe un AFN llamado '" + nombre.trim() + "'. Escribe otro nombre.");
+            return;
+        }
+
+        int id = gestor.Registrar(nuevo, nombre);
+        Avisos.info("AFN creado", "Se creó el AFN '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         campoNombreNuevo.clear();
         campoSimboloInferior.clear();
         campoSimboloSuperior.clear();
@@ -67,11 +72,42 @@ public class PrincipalController implements VistaConContexto {
             mostrarAviso("Selecciona un AFN de la lista para renombrar.");
             return;
         }
-        gestor.Renombrar(seleccion.getId(), nuevoNombre);
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            mostrarAviso("Escribe el nuevo nombre.");
+            return;
+        }
+        if (gestor.ExisteNombre(nuevoNombre) && !seleccion.getNombre().equalsIgnoreCase(nuevoNombre.trim())) {
+            mostrarAviso("Ya existe un AFN llamado '" + nuevoNombre.trim() + "'. Escribe otro nombre.");
+            return;
+        }
+        String anterior = seleccion.getNombre();
+        gestor.Renombrar(seleccion.getId(), nuevoNombre.trim());
         campoNuevoNombre.clear();
+        Avisos.info("AFN renombrado", "'" + anterior + "' ahora se llama '" + nuevoNombre.trim() + "'.");
+    }
+
+    @FXML
+    private void onEliminar() {
+        EntradaAFN seleccion = listaAfn.getSelectionModel().getSelectedItem();
+        if (seleccion == null) {
+            mostrarAviso("Selecciona un AFN de la lista para eliminar.");
+            return;
+        }
+
+        boolean confirmado = Avisos.confirmar(
+                "Eliminar AFN",
+                "¿Eliminar el AFN '" + seleccion.getNombre() + "'?",
+                "Se quitará del catálogo y se borrará su archivo guardado.\nEsta acción no se puede deshacer.",
+                "Eliminar");
+        if (!confirmado) {
+            return;
+        }
+        // El gestor borra tambien el archivo .afn solo (autoguardado)
+        gestor.Eliminar(seleccion.getId());
+        Avisos.info("AFN eliminado", "Se eliminó el AFN '" + seleccion.getNombre() + "'.");
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }

@@ -3,7 +3,6 @@ package automaton.ui;
 import automaton.EntradaAFN;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -62,7 +61,11 @@ public class UnirController implements VistaConContexto {
             return;
         }
 
-        gestor.Union(uno.getId(), dos.getId(), nombreResultado);
+        String nombreUno = uno.getNombre();
+        String nombreDos = dos.getNombre();
+        int id = gestor.Union(uno.getId(), dos.getId(), nombreResultado);
+        Avisos.info("Unión realizada", "Se unieron '" + nombreUno + "' y '" + nombreDos
+                + "'. Resultado: '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         comboAfnUno.setValue(null);
         comboAfnDos.setValue(null);
         campoNombreResultadoDos.clear();
@@ -99,9 +102,11 @@ public class UnirController implements VistaConContexto {
         }
 
         campoNombreResultadoVarios.clear();
+        Avisos.info("Unión realizada", "Se unieron " + seleccionados.size() + " AFN. Resultado: '"
+                + gestor.ObtenerEntrada(idAcumulado).getNombre() + "'.");
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }

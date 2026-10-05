@@ -14,7 +14,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="automaton.ui.VerAfnController"
+            fx:controller="automaton.ui.VerAfdController"
             styleClass="raiz">
 
     <top>
@@ -23,11 +23,11 @@
                 <Insets top="16" right="16" bottom="16" left="16"/>
             </padding>
 
-            <Label text="Ver AFN" styleClass="titulo"/>
+            <Label text="Ver AFD" styleClass="titulo"/>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Autómata:"/>
-                <ComboBox fx:id="comboAfnVer" promptText="Selecciona un AFN" prefWidth="220"/>
+                <ComboBox fx:id="comboAfdVer" promptText="Selecciona un AFD" prefWidth="220"/>
             </HBox>
         </VBox>
     </top>
@@ -41,7 +41,7 @@
                             <LienzoAfn fx:id="lienzo"/>
                         </content>
                     </ScrollPane>
-                    <Label fx:id="etiquetaVacio" text="Selecciona un AFN para ver su gráfico" styleClass="subtitulo"/>
+                    <Label fx:id="etiquetaVacio" text="Selecciona un AFD para ver su gráfico" styleClass="subtitulo"/>
                 </StackPane>
 
                 <VBox spacing="8" styleClass="panel-catalogo" minWidth="220">
@@ -51,7 +51,7 @@
                     <Label text="Tabla de transiciones" styleClass="subtitulo"/>
                     <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS">
                         <placeholder>
-                            <Label text="Selecciona un AFN para ver su tabla" styleClass="subtitulo"/>
+                            <Label text="Selecciona un AFD para ver su tabla" styleClass="subtitulo"/>
                         </placeholder>
                     </TableView>
                 </VBox>

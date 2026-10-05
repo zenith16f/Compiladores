@@ -3,7 +3,6 @@ package automaton.ui;
 import automaton.EntradaAFN;
 import automaton.GestorAFN;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
@@ -30,12 +29,15 @@ public class OpcionalController implements VistaConContexto {
             return;
         }
 
-        gestor.Optional(seleccion.getId(), nombreResultado);
+        String nombreOriginal = seleccion.getNombre();
+        int id = gestor.Optional(seleccion.getId(), nombreResultado);
+        Avisos.info("Operación realizada", "Se aplicó la operación opcional (?) a '" + nombreOriginal
+                + "'. Resultado: '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         comboAfn.setValue(null);
         campoNombreResultado.clear();
     }
 
     private void mostrarAviso(String mensaje) {
-        new Alert(Alert.AlertType.WARNING, mensaje).showAndWait();
+        Avisos.aviso(mensaje);
     }
 }
