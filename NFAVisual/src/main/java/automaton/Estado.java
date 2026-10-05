@@ -6,17 +6,20 @@ public class Estado {
     private final int idEstado;
     private boolean estadoAccept;
     private ArrayList<Transicion> transiciones;
-    
+    private int token;
+
     public Estado(){
         this.idEstado = GeneradorId.NuevoIdEstado();
         this.estadoAccept = false;
         this.transiciones = new ArrayList<>();
+        this.token = -1;
     }
 
     public Estado(int i){
         this.idEstado = i;
         this.estadoAccept = false;
         this.transiciones = new ArrayList<>();
+        this.token = -1;
     }
 
 
@@ -33,7 +36,10 @@ public class Estado {
 
     public void setEstadoAccept(boolean estadoAccept) {
         this.estadoAccept = estadoAccept;
+        this.token = GeneradorToken.NuevoTokenEstado();
     }
+    public int getToken() {return token;}
+    //public void setToken(int token) {this.token = token;}
 
     public ArrayList<Transicion> getTransiciones() {
         return transiciones;
@@ -49,4 +55,7 @@ public class Estado {
     public String toString(){
         return "q: " + idEstado + (estadoAccept? "*": "");
     }
+
+
+
 }

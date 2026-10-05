@@ -154,7 +154,7 @@ public class AFN {
         int numConjSj = 0;
         Queue<Sj> conjSjSinAnalizar = new ArrayDeque<>();
         List<Sj> conjTodosSj = new ArrayList<>();
-        List<Estado> edosAFD = new ArrayList<>();
+        ArrayList<Estado> edosAFD = new ArrayList<>();
         ArrayList<Estado> edosAcept = new ArrayList<>();
 
         // Construcción de S0
@@ -210,7 +210,7 @@ public class AFN {
 
         }
 
-        AFD afd = new AFD(this.alfabeto, edosAcept,(ArrayList<Estado>) edosAFD);
+        AFD afd = new AFD(this.alfabeto, edosAcept,edosAFD);
         afd.setEstadoInicial(s0);
         return afd;
     }
