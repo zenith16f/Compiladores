@@ -42,7 +42,8 @@ public class AFD {
 
                 for (char c : getAlfabeto())
                     writer.print(map.get(c));
-
+                writer.print(" ");
+                writer.print(estado.getToken());
                 writer.println();
             }
 
