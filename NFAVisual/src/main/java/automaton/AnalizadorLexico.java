@@ -119,14 +119,15 @@ public class AnalizadorLexico {
         }
 
         while (indexCharAct < lenSigma) {
+            int edoDestinoTemp = -1; // Asumimos que no hay transición válida
             for (Transicion t : AFD_lexic.getEstadosAFD().get(edoAct).getTransiciones()) {
                 if (sigma.charAt(indexCharAct) >= t.getSimboloInferior() &&
                         sigma.charAt(indexCharAct) <= t.getSimboloSuperior()) {
-                    edoAct = t.getEstadoDestino().getIdEstado();
+                    edoDestinoTemp = t.getEstadoDestino().getIdEstado();
                     break;
                 }
             }
-
+            edoAct = edoDestinoTemp;
             if (edoAct != -1) {
                 if (AFD_lexic.getEstadosAFD().get(edoAct).getToken() != -1) {
                     index_last_lex = indexCharAct;// aquí recordamos donde se dio el estado de aceptación
@@ -137,13 +138,19 @@ public class AnalizadorLexico {
                 continue;
             }
             if (pasoPorEdoAcep) {
-                yytext = sigma.substring(index_begin_lex, index_last_lex);
+                yytext = sigma.substring(index_begin_lex, index_last_lex+1);//se le agrega el -1 por que en java, substring haria el subarreglo hasta una posicion menos
                 indexCharAct = index_last_lex + 1;
                 return token;
             }
+            yytext = String.valueOf(sigma.charAt(index_begin_lex));
             indexCharAct++; //Esto lo hacemos por qué en caso de que no hayamos pasado por edo. De acpt y hay error, pues, nadamas saltar ese caracter que da problemas
             return tokenError;
 
+        }
+        if (pasoPorEdoAcep) {
+            yytext = sigma.substring(index_begin_lex, index_last_lex + 1);
+            indexCharAct = index_last_lex + 1;
+            return token;
         }
         return 0;
     }
