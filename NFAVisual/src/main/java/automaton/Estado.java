@@ -39,7 +39,7 @@ public class Estado {
         this.token = GeneradorToken.NuevoTokenEstado();
     }
     public int getToken() {return token;}
-    //public void setToken(int token) {this.token = token;}
+    public void setToken(int token) {this.token = token;}
 
     public ArrayList<Transicion> getTransiciones() {
         return transiciones;
