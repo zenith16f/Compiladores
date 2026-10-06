@@ -5,6 +5,8 @@ package automaton;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AnalizadorLexico {
@@ -73,6 +75,7 @@ public class AnalizadorLexico {
             AFD_lexic = new AFD();
             AFD_lexic.setNumEdos(totalEstados);
             ArrayList<Estado> estadosAfd = new ArrayList<>();
+            ArrayList<Estado> estadosAceptacion = new ArrayList<>();
 
             for (int i = 0; i < 256; i++)
                 infAlfabeto[i] = Integer.parseInt(afdReader.next());
@@ -90,8 +93,13 @@ public class AnalizadorLexico {
                     if (edoDestino == -1) continue;
                     e.setTransicion(new Transicion((char) infAlfabeto[col], estadosAfd.get(edoDestino)));
                 }
+                if (Integer.parseInt(afdReader.next()) != -1){
+                    estadosAceptacion.add(e);
+                    e.setEstadoAccept(true);
+                }
             }
             AFD_lexic.setEstadosAFD(estadosAfd);
+            AFD_lexic.setEstadosAccept(estadosAceptacion);
         }
         sigma = cadenaAnalizar;
         indexCharAct = 0;
@@ -115,31 +123,29 @@ public class AnalizadorLexico {
                 if (sigma.charAt(indexCharAct) >= t.getSimboloInferior() &&
                         sigma.charAt(indexCharAct) <= t.getSimboloSuperior()) {
                     edoAct = t.getEstadoDestino().getIdEstado();
+                    break;
                 }
             }
 
-            if (edoAct != -1) {//lo que significa que no es de aceptacion
-                if (AFD_lexic.getEstadosAFD().get(edoAct)
-                        .getTransiciones().get(256).getEstadoDestino().getIdEstado() != -1) {
+            if (edoAct != -1) {
+                if (AFD_lexic.getEstadosAFD().get(edoAct).getToken() != -1) {
                     index_last_lex = indexCharAct;// aquí recordamos donde se dio el estado de aceptación
                     pasoPorEdoAcep = true;
-                    token = AFD_lexic.getEstadosAFD().get(edoAct).getTransiciones().get(256).getEstadoDestino().getIdEstado();
+                    token = AFD_lexic.getEstadosAFD().get(edoAct).getToken();
                 }
                 indexCharAct++;
-
-                if (pasoPorEdoAcep) {
-                    yytext = sigma.substring(index_begin_lex, index_last_lex);
-                    indexCharAct = index_last_lex + 1;
-                    return token;
-                }
-
-                indexCharAct++; //Esto lo hacemos por qué en caso de que no hayamos pasado por edo. De acpt y hay error, pues, nadamas saltar ese caracter que da problemas
-                return tokenError;
+                continue;
             }
-            return 0;
-        }
+            if (pasoPorEdoAcep) {
+                yytext = sigma.substring(index_begin_lex, index_last_lex);
+                indexCharAct = index_last_lex + 1;
+                return token;
+            }
+            indexCharAct++; //Esto lo hacemos por qué en caso de que no hayamos pasado por edo. De acpt y hay error, pues, nadamas saltar ese caracter que da problemas
+            return tokenError;
 
-        return token;
+        }
+        return 0;
     }
 
 }
