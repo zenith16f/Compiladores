@@ -25,8 +25,8 @@ public class AFD {
     }
 
 
-    public void imprimirAFD() throws IOException {
-       File file = new File("AFD.txt");
+    public void imprimirAFD(String name) throws IOException {
+       File file = new File("/home/ericktello/Downloads/"+name+".txt");
         if(!file.createNewFile())
             System.out.println("El archivo ya existe");
 
@@ -40,9 +40,15 @@ public class AFD {
                 for (Transicion t : estado.getTransiciones())
                     map.put(t.getSimboloInferior(),t.getEstadoDestino().getIdEstado());
 
-                for (char c : getAlfabeto())
-                    writer.print(map.get(c));
-                writer.print(" ");
+                for (char c : getAlfabeto()){
+                    try{
+                       int aux = map.get(c);
+                        writer.print(aux + " ");
+                    }catch (NullPointerException e){
+                        writer.print("-1 ");
+                    }
+                    }
+
                 writer.print(estado.getToken());
                 writer.println();
             }

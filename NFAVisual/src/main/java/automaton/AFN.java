@@ -151,6 +151,7 @@ public class AFN {
     }
 
     public AFD convertir_AFN() {
+        GeneradorToken.ReiniciarToken();
         int numConjSj = 0;
         Queue<Sj> conjSjSinAnalizar = new ArrayDeque<>();
         List<Sj> conjTodosSj = new ArrayList<>();

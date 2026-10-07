@@ -25,5 +25,6 @@
         <TextField fx:id="campoNuevoNombre" promptText="Nuevo nombre" prefWidth="220"/>
         <Button text="Renombrar seleccionado" onAction="#onRenombrar" styleClass="boton-secundario"/>
         <Button text="Eliminar seleccionado" onAction="#onEliminar" styleClass="boton-secundario"/>
+        <Button text="imprimir" onAction="#onImprimir" styleClass="boton-secundario"/>
     </HBox>
 </VBox>

@@ -75,4 +75,30 @@ public class ListadoAFDController implements VistaConContexto {
             Avisos.error("No se pudo eliminar el archivo: " + e.getMessage());
         }
     }
+
+
+    @FXML
+    private void onImprimir() {
+        EntradaAFD seleccion = listaAfd.getSelectionModel().getSelectedItem();
+        if (seleccion == null) {
+            Avisos.aviso("Selecciona un AFD de la lista para eliminar.");
+            return;
+        }
+
+        boolean confirm = Avisos.confirmar(
+                "Imprimir AFD",
+                "¿Imprimir el AFD '" + seleccion.getNombre() + "'?",
+                "Se imprimira su afd como en la carpeta descargas como txt ",
+                "Imprimir");
+        if (!confirm) {
+            return;
+        }
+
+        try {
+            gestorAfd.Obtener(seleccion.getId()).imprimirAFD(seleccion.getNombre());
+            Avisos.info("AFD impreso", "Se imprimio el AFD '" + seleccion.getNombre() + "'.");
+        } catch (IOException | RuntimeException e) {
+            Avisos.error("No se pudo imprimir ununununu el archivo: " + e.getMessage());
+        }
+    }
 }
