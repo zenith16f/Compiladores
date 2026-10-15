@@ -14,6 +14,7 @@ public class CerradurasController implements VistaConContexto {
     @FXML private ComboBox<EntradaAFN> comboAfn;
     @FXML private ComboBox<String> comboOperacion;
     @FXML private TextField campoNombreResultado;
+    @FXML private TextField campoToken;
 
     private GestorAFN gestor;
 
@@ -40,17 +41,26 @@ public class CerradurasController implements VistaConContexto {
             return;
         }
 
+        Integer token;
+        try {
+            token = CampoToken.leer(campoToken.getText());
+        } catch (IllegalArgumentException e) {
+            mostrarAviso(e.getMessage());
+            return;
+        }
+
         int id = seleccion.getId();
         String nombreOriginal = seleccion.getNombre();
         int idResultado = switch (operacion) {
-            case KLEENE -> gestor.CerraduraKleene(id, nombreResultado);
-            case POSITIVA -> gestor.Positiva(id, nombreResultado);
+            case KLEENE -> gestor.CerraduraKleene(id, nombreResultado, token);
+            case POSITIVA -> gestor.Positiva(id, nombreResultado, token);
             default -> throw new IllegalStateException("Operación desconocida: " + operacion);
         };
         Avisos.info("Operación realizada", "Se aplicó '" + operacion + "' a '" + nombreOriginal
                 + "'. Resultado: '" + gestor.ObtenerEntrada(idResultado).getNombre() + "'.");
 
         campoNombreResultado.clear();
+        campoToken.clear();
     }
 
     private void mostrarAviso(String mensaje) {

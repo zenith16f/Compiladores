@@ -49,7 +49,7 @@ public class AlmacenAutomatas {
         }
         Path destino = rutaDe(nombre, EXT_AFN);
         escribir(destino, TIPO_AFN, afn.getAlfabeto(), afn.getEstadoInicial(),
-                afn.getEstadosAFN(), afn.getEstadosAccept());
+                afn.getEstadosAFN(), afn.getEstadosAccept(), afn.isTokensAsignados());
         return destino;
     }
 
@@ -60,6 +60,7 @@ public class AlmacenAutomatas {
         afn.setEstadoInicial(datos.inicial);
         afn.setEstadosAFN(datos.estados);
         afn.setEstadosAccept(datos.aceptacion);
+        afn.setTokensAsignados(datos.hayTokens);
         return afn;
     }
 
@@ -99,7 +100,7 @@ public class AlmacenAutomatas {
         }
         Path destino = rutaDe(nombre, EXT_AFD);
         escribir(destino, TIPO_AFD, afd.getAlfabeto(), afd.getEstadoInicial(),
-                afd.getEstadosAFD(), afd.getEstadosAccept());
+                afd.getEstadosAFD(), afd.getEstadosAccept(), true);
         return destino;
     }
 
@@ -176,10 +177,11 @@ public class AlmacenAutomatas {
         ArrayList<Estado> estados = new ArrayList<>();
         Estado inicial;
         ArrayList<Estado> aceptacion = new ArrayList<>();
+        boolean hayTokens;
     }
 
     private void escribir(Path destino, String tipo, List<Character> alfabeto, Estado inicial,
-                          List<Estado> estados, List<Estado> aceptacion) throws IOException {
+                          List<Estado> estados, List<Estado> aceptacion, boolean conTokens) throws IOException {
         if (inicial == null) {
             throw new IllegalArgumentException("El automata no tiene estado inicial.");
         }
@@ -223,6 +225,17 @@ public class AlmacenAutomatas {
             }
             w.write(linea.toString());
             w.newLine();
+
+            // Va despues de ACEPTACION: al leer, marcar aceptacion genera un token generico
+            // y esta linea lo reemplaza por el que tenia el estado.
+            if (conTokens) {
+                for (Estado e : todos) {
+                    if (e.isEstadoAccept() || (aceptacion != null && aceptacion.contains(e))) {
+                        w.write("TOKEN " + e.getIdEstado() + " " + e.getToken());
+                        w.newLine();
+                    }
+                }
+            }
 
             for (Estado origen : todos) {
                 for (Transicion t : origen.getTransiciones()) {
@@ -305,6 +318,10 @@ public class AlmacenAutomatas {
                                 estado.setEstadoAccept(true);
                                 datos.aceptacion.add(estado);
                             }
+                        }
+                        case "TOKEN" -> {
+                            estadoPorId(porId, partes[1]).setToken(Integer.parseInt(partes[2]));
+                            datos.hayTokens = true;
                         }
                         case "TRANSICION" -> {
                             Estado origenT = estadoPorId(porId, partes[1]);

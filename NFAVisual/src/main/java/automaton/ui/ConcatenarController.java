@@ -11,6 +11,7 @@ public class ConcatenarController implements VistaConContexto {
     @FXML private ComboBox<EntradaAFN> comboAfnUno;
     @FXML private ComboBox<EntradaAFN> comboAfnDos;
     @FXML private TextField campoNombreResultado;
+    @FXML private TextField campoToken;
 
     private GestorAFN gestor;
 
@@ -32,14 +33,23 @@ public class ConcatenarController implements VistaConContexto {
             return;
         }
 
+        Integer token;
+        try {
+            token = CampoToken.leer(campoToken.getText());
+        } catch (IllegalArgumentException e) {
+            mostrarAviso(e.getMessage());
+            return;
+        }
+
         String nombreUno = uno.getNombre();
         String nombreDos = dos.getNombre();
-        int id = gestor.Concatenacion(uno.getId(), dos.getId(), nombreResultado);
+        int id = gestor.Concatenacion(uno.getId(), dos.getId(), nombreResultado, token);
         Avisos.info("Concatenación realizada", "Se concatenaron '" + nombreUno + "' y '" + nombreDos
                 + "'. Resultado: '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         comboAfnUno.setValue(null);
         comboAfnDos.setValue(null);
         campoNombreResultado.clear();
+        campoToken.clear();
     }
 
     private void mostrarAviso(String mensaje) {

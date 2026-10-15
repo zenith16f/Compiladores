@@ -10,7 +10,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import org.controlsfx.control.CheckListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -45,19 +46,31 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Nombre del resultado:"/>
                 <TextField fx:id="campoNombreResultadoDos" promptText="opcional" prefWidth="180"/>
+                <TextField fx:id="campoTokenDos" promptText="token (opcional)" prefWidth="130"/>
                 <Button text="Unir" onAction="#onUnirDos" styleClass="boton-primario"/>
             </HBox>
         </VBox>
 
-        <!-- Modo "Unir varios": checkboxes para marcar 2 o mas AFN. -->
+        <!-- Modo "Unir varios" (Union especial): nuevo estado inicial con epsilon a cada
+             AFN marcado; cada AFN conserva sus estados de aceptacion con su token. -->
         <VBox fx:id="panelUnirVarios" spacing="12" visible="false" managed="false">
-            <Label text="Marca dos o más AFN de la lista para unirlos en uno solo." styleClass="subtitulo"/>
+            <Label text="Marca los AFN a unir y asigna el token de cada uno. Cada AFN conserva sus estados de aceptación con su token (el orden de la lista es la prioridad)."
+                   styleClass="subtitulo" wrapText="true"/>
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Nombre del resultado:"/>
                 <TextField fx:id="campoNombreResultadoVarios" promptText="opcional" prefWidth="180"/>
                 <Button text="Unir seleccionados" onAction="#onUnirVarios" styleClass="boton-primario"/>
             </HBox>
-            <CheckListView fx:id="listaAfnUnir" styleClass="lista-checks" VBox.vgrow="ALWAYS"/>
+            <TableView fx:id="tablaAfnUnir" editable="true" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="columnaSeleccion" text="✓" prefWidth="50" sortable="false" reorderable="false"/>
+                    <TableColumn fx:id="columnaNombre" text="AFN" prefWidth="220" sortable="false" reorderable="false"/>
+                    <TableColumn fx:id="columnaToken" text="Token" prefWidth="120" sortable="false" reorderable="false"/>
+                </columns>
+                <placeholder>
+                    <Label text="No hay AFN en el catálogo."/>
+                </placeholder>
+            </TableView>
         </VBox>
 
     </StackPane>

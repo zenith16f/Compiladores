@@ -10,6 +10,7 @@ public class OpcionalController implements VistaConContexto {
 
     @FXML private ComboBox<EntradaAFN> comboAfn;
     @FXML private TextField campoNombreResultado;
+    @FXML private TextField campoToken;
 
     private GestorAFN gestor;
 
@@ -29,12 +30,21 @@ public class OpcionalController implements VistaConContexto {
             return;
         }
 
+        Integer token;
+        try {
+            token = CampoToken.leer(campoToken.getText());
+        } catch (IllegalArgumentException e) {
+            mostrarAviso(e.getMessage());
+            return;
+        }
+
         String nombreOriginal = seleccion.getNombre();
-        int id = gestor.Optional(seleccion.getId(), nombreResultado);
+        int id = gestor.Optional(seleccion.getId(), nombreResultado, token);
         Avisos.info("Operación realizada", "Se aplicó la operación opcional (?) a '" + nombreOriginal
                 + "'. Resultado: '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         comboAfn.setValue(null);
         campoNombreResultado.clear();
+        campoToken.clear();
     }
 
     private void mostrarAviso(String mensaje) {

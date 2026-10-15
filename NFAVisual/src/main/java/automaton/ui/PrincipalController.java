@@ -14,6 +14,7 @@ public class PrincipalController implements VistaConContexto {
     @FXML private TextField campoNombreNuevo;
     @FXML private TextField campoSimboloInferior;
     @FXML private TextField campoSimboloSuperior;
+    @FXML private TextField campoToken;
 
     private GestorAFN gestor;
 
@@ -56,11 +57,20 @@ public class PrincipalController implements VistaConContexto {
             return;
         }
 
-        int id = gestor.Registrar(nuevo, nombre);
+        Integer token;
+        try {
+            token = CampoToken.leer(campoToken.getText());
+        } catch (IllegalArgumentException e) {
+            mostrarAviso(e.getMessage());
+            return;
+        }
+
+        int id = gestor.Registrar(nuevo.AsignarToken(token), nombre);
         Avisos.info("AFN creado", "Se creó el AFN '" + gestor.ObtenerEntrada(id).getNombre() + "'.");
         campoNombreNuevo.clear();
         campoSimboloInferior.clear();
         campoSimboloSuperior.clear();
+        campoToken.clear();
     }
 
     @FXML

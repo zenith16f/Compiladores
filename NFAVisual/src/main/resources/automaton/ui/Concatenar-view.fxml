@@ -27,6 +27,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Nombre del resultado:"/>
         <TextField fx:id="campoNombreResultado" promptText="opcional" prefWidth="180"/>
+        <TextField fx:id="campoToken" promptText="token (opcional)" prefWidth="130"/>
         <Button text="Concatenar" onAction="#onConcatenar" styleClass="boton-primario"/>
     </HBox>
 

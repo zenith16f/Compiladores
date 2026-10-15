@@ -7,6 +7,9 @@ public class AFN {
     private Estado estadoInicial;
     private ArrayList<Estado> estadosAccept;
     private ArrayList<Estado> estadosAFN;
+    // true cuando los tokens de los estados de aceptacion los eligio el usuario
+    // (Union especial); entonces el AFD hereda esos tokens en vez de generarlos.
+    private boolean tokensAsignados;
 
     // Constructor
     public AFN() {
@@ -68,8 +71,64 @@ public class AFN {
         this.estadosAccept.add(estadoDos);
         this.estadoInicial = estadoUno;
         ListUtils.Union(this.alfabeto, afn2.alfabeto);
+        this.tokensAsignados = false;
 
         return this;
+    }
+
+    /**
+     * Pone el mismo token a todos los estados de aceptacion. Con null se quedan
+     * los tokens genericos (el AFD numera sus estados de aceptacion 10, 20, 30...).
+     */
+    public AFN AsignarToken(Integer token) {
+        if (token == null) {
+            this.tokensAsignados = false;
+            return this;
+        }
+        for (Estado estado : this.estadosAccept) {
+            estado.setToken(token);
+        }
+        this.tokensAsignados = true;
+        return this;
+    }
+
+    /**
+     * Union especial (para el analizador lexico): un estado inicial nuevo con
+     * transiciones epsilon al estado inicial de cada AFN. A diferencia de Unir(),
+     * NO se crea un estado final comun: cada AFN conserva sus estados de
+     * aceptacion y estos quedan marcados con el token que le toca a ese AFN.
+     *
+     * El orden de la lista es la prioridad: si al convertir a AFD un estado
+     * contiene aceptaciones de varios AFN, gana el que aparece primero.
+     */
+    public static AFN UnionEspecial(List<AFN> afns, List<Integer> tokens) {
+        if (afns.size() != tokens.size()) {
+            throw new IllegalArgumentException("Cada AFN necesita su token.");
+        }
+
+        AFN resultado = new AFN();
+        Estado nuevoInicial = new Estado();
+        resultado.estadoInicial = nuevoInicial;
+        resultado.estadosAFN.add(nuevoInicial);
+
+        for (int i = 0; i < afns.size(); i++) {
+            AFN afn = afns.get(i);
+            int token = tokens.get(i);
+
+            nuevoInicial.getTransiciones().add(new Transicion(Simbolo.EPSILON, afn.estadoInicial));
+
+            for (Estado estado : afn.estadosAccept) {
+                estado.setEstadoAccept(true); // setEstadoAccept pone un token generico,
+                estado.setToken(token);       // por eso el token del usuario va despues
+            }
+
+            ListUtils.Union(resultado.estadosAFN, afn.estadosAFN);
+            ListUtils.Union(resultado.estadosAccept, afn.estadosAccept);
+            ListUtils.Union(resultado.alfabeto, afn.alfabeto);
+        }
+
+        resultado.tokensAsignados = true;
+        return resultado;
     }
 
     public AFN Concatenar(AFN afn2) {
@@ -85,6 +144,7 @@ public class AFN {
         this.estadosAccept.clear();
         ListUtils.Union(this.estadosAccept, afn2.estadosAccept);
         ListUtils.Union(this.alfabeto, afn2.alfabeto);
+        this.tokensAsignados = false;
 
         return this;
     }
@@ -100,11 +160,13 @@ public class AFN {
             estado.setEstadoAccept(false);
         }
 
+        estadoDos.setEstadoAccept(true);
         this.estadosAFN.add(estadoUno);
         this.estadosAFN.add(estadoDos);
         this.setEstadoInicial(estadoUno);
         this.estadosAccept.clear();
         this.estadosAccept.add(estadoDos);
+        this.tokensAsignados = false;
 
         return this;
     }
@@ -137,6 +199,7 @@ public class AFN {
         this.setEstadoInicial(estadoUno);
         this.estadosAccept.clear();
         this.estadosAccept.add(estadoDos);
+        this.tokensAsignados = false;
 
         return this;
     }
@@ -148,6 +211,22 @@ public class AFN {
             }
         }
         return false;
+    }
+
+    // Marca un estado del AFD como de aceptacion. Si el AFN viene de una Union
+    // especial, el token es el del primer estado de aceptacion del AFN (en orden
+    // de prioridad) contenido en Sj; si no, se queda el token generico.
+    private void marcarAceptacionAfd(Estado edoAFD, Set<Estado> conjuntoSj) {
+        edoAFD.setEstadoAccept(true);
+        if (!tokensAsignados) {
+            return;
+        }
+        for (Estado e : this.estadosAccept) {
+            if (conjuntoSj.contains(e)) {
+                edoAFD.setToken(e.getToken());
+                return;
+            }
+        }
     }
 
     public AFD convertir_AFN() {
@@ -165,7 +244,7 @@ public class AFN {
             // El AFN acepta la cadena vacia (la cerradura-e del estado
             // inicial ya toca un estado de aceptacion), asi que S0 en
             // el AFD tambien debe quedar marcado como de aceptacion.
-            s0.setEstadoAccept(true);
+            marcarAceptacionAfd(s0, s0Edos);
             edosAcept.add(s0);
         }
         Sj sjAux = new Sj(numConjSj++, s0Edos,s0);
@@ -193,7 +272,7 @@ public class AFN {
                 if (edoExist == null) { // Es nuevo
                     Estado edoAFDnuevo = new Estado(numConjSj);
                     if (esEstadoDeAceptacion(sjTempEdos, this.estadosAccept)) {
-                        edoAFDnuevo.setEstadoAccept(true);
+                        marcarAceptacionAfd(edoAFDnuevo, sjTempEdos);
                         edosAcept.add(edoAFDnuevo);
                     }
 
@@ -293,5 +372,13 @@ public class AFN {
 
     public void setEstadosAFN(ArrayList<Estado> estadosAFN) {
         this.estadosAFN = estadosAFN;
+    }
+
+    public boolean isTokensAsignados() {
+        return tokensAsignados;
+    }
+
+    public void setTokensAsignados(boolean tokensAsignados) {
+        this.tokensAsignados = tokensAsignados;
     }
 }

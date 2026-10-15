@@ -5,6 +5,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -112,39 +114,52 @@ public class GestorAFN {
         return BuscarEntrada(id).orElseThrow(() -> new IllegalArgumentException("Entrada no encontrada"));
     }
 
-    // AFN Methods
-    public int Union(int firstId, int secondId, String nombreResultado) {
+    // AFN Methods (token null = tokens genericos; si no, todos los estados finales del resultado lo llevan)
+    public int Union(int firstId, int secondId, String nombreResultado, Integer token) {
         AFN f1 = ExigirEntrada(firstId).getAfn();
         AFN f2 = ExigirEntrada(secondId).getAfn();
-        AFN resultado = f1.Unir(f2);
+        AFN resultado = f1.Unir(f2).AsignarToken(token);
         Eliminar(firstId);
         Eliminar(secondId);
         return Registrar(resultado, nombreResultado);
     }
 
-    public int Concatenacion(int firstId, int secondId, String nombreResultado) {
+    // Union especial: ids y tokens van en el mismo orden (el orden es la prioridad)
+    public int UnionEspecial(List<Integer> ids, List<Integer> tokens, String nombreResultado) {
+        List<AFN> afns = new ArrayList<>();
+        for (int id : ids) {
+            afns.add(ExigirEntrada(id).getAfn());
+        }
+        AFN resultado = AFN.UnionEspecial(afns, tokens);
+        for (int id : ids) {
+            Eliminar(id);
+        }
+        return Registrar(resultado, nombreResultado);
+    }
+
+    public int Concatenacion(int firstId, int secondId, String nombreResultado, Integer token) {
         AFN f1 = ExigirEntrada(firstId).getAfn();
         AFN f2 = ExigirEntrada(secondId).getAfn();
-        AFN resultado = f1.Concatenar(f2);
+        AFN resultado = f1.Concatenar(f2).AsignarToken(token);
         Eliminar(firstId);
         Eliminar(secondId);
         return Registrar(resultado, nombreResultado);
     }
 
-    public int Positiva(int id, String nombreResultado) {
-        AFN resultado = ExigirEntrada(id).getAfn().CerraduraPositiva();
+    public int Positiva(int id, String nombreResultado, Integer token) {
+        AFN resultado = ExigirEntrada(id).getAfn().CerraduraPositiva().AsignarToken(token);
         Eliminar(id);
         return Registrar(resultado, nombreResultado);
     }
 
-    public int CerraduraKleene(int id, String nombreResultado) {
-        AFN resultado = ExigirEntrada(id).getAfn().CerraduraKleene();
+    public int CerraduraKleene(int id, String nombreResultado, Integer token) {
+        AFN resultado = ExigirEntrada(id).getAfn().CerraduraKleene().AsignarToken(token);
         Eliminar(id);
         return Registrar(resultado, nombreResultado);
     }
 
-    public int Optional(int id, String nombreResultado) {
-        AFN resultado = ExigirEntrada(id).getAfn().OpOpcional();
+    public int Optional(int id, String nombreResultado, Integer token) {
+        AFN resultado = ExigirEntrada(id).getAfn().OpOpcional().AsignarToken(token);
         Eliminar(id);
         return Registrar(resultado, nombreResultado);
     }
