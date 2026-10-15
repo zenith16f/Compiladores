@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="automaton.ui.AnalizadorLexicoController"
+            styleClass="raiz">
+
+    <top>
+        <VBox spacing="12" styleClass="barra-superior">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <Label text="Analizador léxico" styleClass="titulo"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Cargar AFD de archivo…" onAction="#onCargarAfd" styleClass="boton-primario"/>
+                <Label fx:id="etiquetaEstadoAfd" text="Sin AFD cargado" styleClass="estado-afd-pendiente"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.5" orientation="HORIZONTAL" styleClass="split-ver-afn">
+            <items>
+                <VBox spacing="8" styleClass="panel-catalogo">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <Label text="Cadena a analizar (Σ)" styleClass="subtitulo"/>
+                    <TextArea fx:id="areaCadena" wrapText="true" VBox.vgrow="ALWAYS" styleClass="area-cadena"
+                              promptText="Escribe la cadena que quieres analizar"/>
+                </VBox>
+
+                <VBox spacing="8" styleClass="panel-catalogo">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <Label text="Resultado del análisis léxico" styleClass="subtitulo"/>
+                    <TableView fx:id="tablaResultado" VBox.vgrow="ALWAYS">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="columnaToken" text="Token" sortable="false"/>
+                            <TableColumn fx:id="columnaLexema" text="Lexema" sortable="false"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="Carga un AFD y analiza una cadena" styleClass="subtitulo"/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" alignment="CENTER" styleClass="barra-inferior">
+            <padding>
+                <Insets top="12" right="16" bottom="16" left="16"/>
+            </padding>
+            <Button fx:id="botonAnalizarTodo" text="Analizar toda la cadena" onAction="#onAnalizarTodo"
+                    styleClass="boton-primario"/>
+            <Button fx:id="botonSiguiente" text="Siguiente token (yylex)" onAction="#onSiguienteToken"
+                    styleClass="boton-secundario"/>
+            <Button fx:id="botonUndo" text="Undo token" onAction="#onUndoToken" styleClass="boton-secundario"/>
+            <Button text="Reiniciar / Limpiar" onAction="#onReiniciar" styleClass="boton-secundario"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

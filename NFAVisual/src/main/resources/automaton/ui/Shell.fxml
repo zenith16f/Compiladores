@@ -37,7 +37,7 @@
                   visible="false" managed="false">
                 <Button fx:id="botonNavAfn" text="&#8962; AFN" onAction="#onNavAfn" styleClass="boton-nav-pill"/>
                 <Button fx:id="botonNavAfd" text="&#8594; AFD" onAction="#onNavAfd" styleClass="boton-nav-pill"/>
-                <Button fx:id="botonNavUnirLexico" text="&#955; Unir para Lexico" onAction="#onNavUnirLexico" styleClass="boton-nav-pill"/>
+                <Button fx:id="botonNavAnalizador" text="&#931; Analizador Léxico" onAction="#onNavAnalizador" styleClass="boton-nav-pill"/>
                 <Button fx:id="botonCerrarPill" text="&#10005;" onAction="#onToggleMenu" styleClass="boton-cerrar-pill"/>
             </HBox>
         </HBox>

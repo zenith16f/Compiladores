@@ -1,6 +1,5 @@
 package automaton;
 
-import java.io.*;
 import java.util.*;
 
 public class AFD {
@@ -22,38 +21,6 @@ public class AFD {
         this.estadosAccept = estadosAccept;
         this.estadosAFD = estadosAFD;
         this.numEdos = estadosAFD.size();
-    }
-
-
-    public void imprimirAFD(String name) throws IOException {
-       File file = new File("/home/ericktello/Downloads/"+name+".txt");
-        if(!file.createNewFile())
-            System.out.println("El archivo ya existe");
-
-        try(PrintWriter writer = new PrintWriter(file)){
-            for(char c : getAlfabeto()) {
-                writer.print(c + " ");
-            }
-            writer.println();
-            for (Estado estado : getEstadosAFD()){
-                Map<Character, Integer> map = new HashMap<>();
-                for (Transicion t : estado.getTransiciones())
-                    map.put(t.getSimboloInferior(),t.getEstadoDestino().getIdEstado());
-
-                for (char c : getAlfabeto()){
-                    try{
-                       int aux = map.get(c);
-                        writer.print(aux + " ");
-                    }catch (NullPointerException e){
-                        writer.print("-1 ");
-                    }
-                    }
-
-                writer.print(estado.getToken());
-                writer.println();
-            }
-
-        }
     }
 
 

@@ -1,11 +1,14 @@
 package automaton.ui;
 
+import automaton.AlmacenAutomatas;
 import automaton.EntradaAFD;
 import automaton.GestorAFD;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ListadoAFDController implements VistaConContexto {
@@ -14,10 +17,12 @@ public class ListadoAFDController implements VistaConContexto {
     @FXML private TextField campoNuevoNombre;
 
     private GestorAFD gestorAfd;
+    private AlmacenAutomatas almacen;
 
     @Override
     public void setContext(AppContext contexto) {
         this.gestorAfd = contexto.getGestorAfd();
+        this.almacen = contexto.getAlmacen();
         // La lista se llena sola: registrar un AFD en el gestor refresca la ObservableList compartida.
         listaAfd.setItems(gestorAfd.getEntradas());
     }
@@ -78,27 +83,32 @@ public class ListadoAFDController implements VistaConContexto {
 
 
     @FXML
-    private void onImprimir() {
+    private void onExportarLexico() {
         EntradaAFD seleccion = listaAfd.getSelectionModel().getSelectedItem();
         if (seleccion == null) {
-            Avisos.aviso("Selecciona un AFD de la lista para eliminar.");
+            Avisos.aviso("Selecciona un AFD de la lista para exportarlo.");
             return;
         }
 
-        boolean confirm = Avisos.confirmar(
-                "Imprimir AFD",
-                "¿Imprimir el AFD '" + seleccion.getNombre() + "'?",
-                "Se imprimira su afd como en la carpeta descargas como txt ",
-                "Imprimir");
-        if (!confirm) {
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Exportar AFD para el analizador léxico");
+        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tabla de AFD (*.txt)", "*.txt"));
+        selector.setInitialFileName(seleccion.getNombre() + AlmacenAutomatas.EXT_LEXICO);
+        File carpeta = almacen.getCarpetaLexico().toFile();
+        if (carpeta.isDirectory() || carpeta.mkdirs()) {
+            selector.setInitialDirectory(carpeta);
+        }
+        File destino = selector.showSaveDialog(listaAfd.getScene().getWindow());
+        if (destino == null) {
             return;
         }
 
         try {
-            gestorAfd.Obtener(seleccion.getId()).imprimirAFD(seleccion.getNombre());
-            Avisos.info("AFD impreso", "Se imprimio el AFD '" + seleccion.getNombre() + "'.");
+            almacen.exportarAfdParaLexico(seleccion.getAutomata(), destino.toPath());
+            Avisos.info("AFD exportado", "Se exportó '" + seleccion.getNombre() + "' a " + destino.getName()
+                    + ". Cárgalo desde «Analizador Léxico».");
         } catch (IOException | RuntimeException e) {
-            Avisos.error("No se pudo imprimir ununununu el archivo: " + e.getMessage());
+            Avisos.error("No se pudo exportar el AFD: " + e.getMessage());
         }
     }
 }

@@ -1,12 +1,14 @@
 package automaton.ui;
 
+import automaton.AnalizadorLexico;
+
 /**
  * Lectura y validacion del token que el usuario escribe para los estados finales de un AFN.
  */
 final class CampoToken {
 
     // Token que regresa yylex() cuando no reconoce nada; no se puede asignar a un AFN
-    static final int TOKEN_ERROR = 1400;
+    static final int TOKEN_ERROR = AnalizadorLexico.TOKEN_ERROR;
 
     private CampoToken() {
     }

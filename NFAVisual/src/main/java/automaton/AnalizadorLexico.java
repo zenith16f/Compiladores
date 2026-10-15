@@ -1,165 +1,170 @@
 package automaton;
 
-//agregar el ID a EdoAFD
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
+/**
+ * Analizador lexico que trabaja sobre la tabla de transiciones de un AFD exportado.
+ *
+ * El archivo lo genera AlmacenAutomatas.exportarAfdParaLexico().
+ * Formato del archivo (todo separado por espacios / saltos de linea):
+ *   linea 1: numero de estados
+ *   linea 2: 256 enteros, uno por codigo ASCII: el mismo codigo si el simbolo esta en el alfabeto, -1 si no
+ *   una linea por estado (la fila 0 es el estado inicial): 256 destinos (-1 = sin transicion) y al final el token
+ *   (-1 si el estado no es de aceptacion)
+ */
 public class AnalizadorLexico {
-    private AFD AFD_lexic; //este es el afd sobre el que va a trabajar nuestro algoritmo
-    private String sigma; // la cadena que será analizada por el léxico
-    private boolean pasoPorEdoAcep; //bandera para saber si él automata paso por el edoacep
-    private int indexCharAct; //este int va a llevar la cuenta de en que caracter del string vamos
-    //lexema: subdcadena que sea reconocida
-    private int index_begin_lex;
-    private int index_last_lex;
-    private String yytext; // es la cadenita que ya hayamos reconocido como un lexema
 
-    public AnalizadorLexico() {
-        sigma = "";
-        AFD_lexic = null;
-        pasoPorEdoAcep = false;
-        indexCharAct = -1;
-        index_begin_lex = -1;
-        index_last_lex = -1;
+    public static final int FIN = 0;            // ya no hay nada que analizar
+    public static final int TOKEN_ERROR = 1400; // caracter que no forma parte de ningun lexema
+    public static final int NUM_COLUMNAS = 256;
+
+    private final int[][] tabla; // tabla[estado][codigoAscii] = estado destino o -1
+    private final int[] tokens;  // tokens[estado] = token del estado o -1
+
+    private String sigma = "";      // la cadena que sera analizada por el lexico
+    private int indexCharAct = 0;   // en que caracter de sigma vamos
+    private int indexInicioLex = 0; // donde empezo el ultimo lexema regresado
+    private String yytext = "";     // el ultimo lexema reconocido
+    // Posicion antes de cada llamada a yylex(), para poder deshacer tokens
+    private final Deque<Integer> historial = new ArrayDeque<>();
+
+    private AnalizadorLexico(int[][] tabla, int[] tokens) {
+        this.tabla = tabla;
+        this.tokens = tokens;
     }
 
-    public AnalizadorLexico(String rutaArchivo) throws FileNotFoundException {
-        leerAFD(rutaArchivo);
-        sigma = "";
-        pasoPorEdoAcep = false;
-        indexCharAct = 0;
-//        index_begin_lex = -1;
-//        index_last_lex = -1;
-    }
+    // ---------- Construccion ----------
 
-
-    public AnalizadorLexico(String rutaArchivo, String cadenaAnalizar) throws FileNotFoundException {
-        leerAFD(rutaArchivo);
-        sigma = cadenaAnalizar;
-        indexCharAct = 0;
-    }
-
-
-    private void leerAFD(String rutaArchivo) throws FileNotFoundException{
-        File afdFile = new File(rutaArchivo);
-
-        try (Scanner afdReader = new Scanner(afdFile)) {
-            int totalEstados = Integer.parseInt(afdReader.next());
-            int[] infAlfabeto = new int[256];
-            AFD_lexic = new AFD();
-            AFD_lexic.setNumEdos(totalEstados);
-            ArrayList<Estado> estadosAfd = new ArrayList<>();
-            ArrayList<Estado> estadosAceptacion = new ArrayList<>();
-
-
-            for (int i = 0; i < 256; i++)
-                infAlfabeto[i] = Integer.parseInt(afdReader.next());
-
-            for (int i = 0; i < 256; i++) {
-                if (infAlfabeto[i] != -1)
-                    AFD_lexic.getAlfabeto().add((char) i);
+    public static AnalizadorLexico desdeArchivo(Path archivo) throws IOException {
+        String[] numeros = Files.readString(archivo, StandardCharsets.UTF_8).trim().split("\\s+");
+        int[] pos = {0};
+        try {
+            int totalEstados = siguiente(numeros, pos);
+            if (totalEstados <= 0) {
+                throw new IOException("El número de estados debe ser mayor que cero.");
             }
-            for (int t = 0; t < totalEstados; t++)
-                estadosAfd.add(new Estado(t));
-
-            for (Estado e : estadosAfd) {
-                for (int col = 0; col < 256; col++) {
-                    int edoDestino = Integer.parseInt(afdReader.next());
-                    if (edoDestino == -1) continue;
-                    e.setTransicion(new Transicion((char) infAlfabeto[col], estadosAfd.get(edoDestino)));
-                }
-                int tokenLeido = Integer.parseInt(afdReader.next());
-                if (tokenLeido != -1){
-                    estadosAceptacion.add(e);
-                    e.setEstadoAccept(true);
-                    e.setToken(tokenLeido);
-                }
+            for (int col = 0; col < NUM_COLUMNAS; col++) {
+                siguiente(numeros, pos); // fila del alfabeto: solo informativa
             }
-            AFD_lexic.setEstadosAFD(estadosAfd);
-            AFD_lexic.setEstadosAccept(estadosAceptacion);
+
+            int[][] tabla = new int[totalEstados][NUM_COLUMNAS];
+            int[] tokens = new int[totalEstados];
+            for (int edo = 0; edo < totalEstados; edo++) {
+                for (int col = 0; col < NUM_COLUMNAS; col++) {
+                    int destino = siguiente(numeros, pos);
+                    if (destino < -1 || destino >= totalEstados) {
+                        throw new IOException("El estado " + edo + " tiene una transición al estado inexistente "
+                                + destino + ".");
+                    }
+                    tabla[edo][col] = destino;
+                }
+                tokens[edo] = siguiente(numeros, pos);
+            }
+            if (pos[0] < numeros.length) {
+                throw new IOException("Sobran datos al final: el archivo dice tener " + totalEstados + " estados.");
+            }
+            return new AnalizadorLexico(tabla, tokens);
+        } catch (NumberFormatException e) {
+            throw new IOException("El archivo no es una tabla de AFD válida (valor no numérico: "
+                    + e.getMessage() + ").", e);
         }
     }
 
-    //el analizador lexico siempre debe regresar 0 cuando ya no hay nada por revisar
-    public int yylex() //asi se llama en todos los compiladores, para llamarlo hay que tener ya cargado él automata y la cadena que quier revisar
-    {
-        pasoPorEdoAcep = false;
-        index_begin_lex = indexCharAct;
-        int token = -1;
-        int tokenError = 1400;
+    private static int siguiente(String[] numeros, int[] pos) throws IOException {
+        if (pos[0] >= numeros.length || numeros[pos[0]].isEmpty()) {
+            throw new IOException("El archivo está incompleto: no es una tabla de AFD exportada.");
+        }
+        return Integer.parseInt(numeros[pos[0]++]);
+    }
+
+    // ---------- Analisis ----------
+
+    /**
+     * Regresa el token del siguiente lexema (el mas largo posible), TOKEN_ERROR si el caracter
+     * actual no inicia ningun lexema, o FIN cuando ya no queda cadena. El lexema queda en yytext.
+     */
+    public int yylex() {
+        historial.push(indexCharAct);
+        indexInicioLex = indexCharAct;
+        if (indexCharAct >= sigma.length()) {
+            yytext = "";
+            return FIN;
+        }
+
         int edoAct = 0;
-        int lenSigma = sigma.length();
-        if (indexCharAct > lenSigma) { //para verficar
-            return 0;
+        int token = -1;
+        int finUltimoLexema = -1; // posicion justo despues del ultimo estado de aceptacion visitado
+        int i = indexCharAct;
+        while (i < sigma.length()) {
+            char c = sigma.charAt(i);
+            int destino = c < NUM_COLUMNAS ? tabla[edoAct][c] : -1;
+            if (destino == -1) {
+                break;
+            }
+            edoAct = destino;
+            i++;
+            if (tokens[edoAct] != -1) {
+                token = tokens[edoAct];
+                finUltimoLexema = i;
+            }
         }
 
-        while (indexCharAct < lenSigma) {
-            int edoDestinoTemp = -1; // Asumimos que no hay transición válida
-            for (Transicion t : AFD_lexic.getEstadosAFD().get(edoAct).getTransiciones()) {
-                if (sigma.charAt(indexCharAct) >= t.getSimboloInferior() &&
-                        sigma.charAt(indexCharAct) <= t.getSimboloSuperior()) {
-                    edoDestinoTemp = t.getEstadoDestino().getIdEstado();
-                    break;
-                }
-            }
-            edoAct = edoDestinoTemp;
-            if (edoAct != -1) {
-                if (AFD_lexic.getEstadosAFD().get(edoAct).getToken() != -1) {
-                    index_last_lex = indexCharAct;// aquí recordamos donde se dio el estado de aceptación
-                    pasoPorEdoAcep = true;
-                    token = AFD_lexic.getEstadosAFD().get(edoAct).getToken();
-                }
-                indexCharAct++;
-                continue;
-            }
-            if (pasoPorEdoAcep) {
-                yytext = sigma.substring(index_begin_lex, index_last_lex+1);//se le agrega el -1 por que en java, substring haria el subarreglo hasta una posicion menos
-                indexCharAct = index_last_lex + 1;
-                return token;
-            }
-            yytext = String.valueOf(sigma.charAt(index_begin_lex));
-            indexCharAct++; //Esto lo hacemos por qué en caso de que no hayamos pasado por edo. De acpt y hay error, pues, nadamas saltar ese caracter que da problemas
-            return tokenError;
-
+        if (finUltimoLexema == -1) {
+            // Nunca se paso por un estado de aceptacion: solo se salta el caracter que da problemas
+            indexCharAct = indexInicioLex + 1;
+            yytext = sigma.substring(indexInicioLex, indexCharAct);
+            return TOKEN_ERROR;
         }
-        if (pasoPorEdoAcep) {
-            yytext = sigma.substring(index_begin_lex, index_last_lex + 1);
-            indexCharAct = index_last_lex + 1;
-            return token;
-        }
-        return 0;
+        // Se regresa al ultimo estado de aceptacion: lo leido despues se vuelve a analizar
+        indexCharAct = finUltimoLexema;
+        yytext = sigma.substring(indexInicioLex, indexCharAct);
+        return token;
     }
 
-    public AFD getAFD_lexic() {
-        return AFD_lexic;
+    /** Deshace la ultima llamada a yylex(). @return false si no habia nada que deshacer */
+    public boolean undoToken() {
+        if (historial.isEmpty()) {
+            return false;
+        }
+        indexCharAct = historial.pop();
+        indexInicioLex = indexCharAct;
+        yytext = "";
+        return true;
+    }
+
+    // ---------- Getters & Setters ----------
+
+    public int getNumEstados() {
+        return tabla.length;
     }
 
     public String getSigma() {
         return sigma;
     }
 
+    /** Cambia la cadena y reinicia el analisis desde el principio. */
     public void setSigma(String sigma) {
-        this.sigma = sigma;
+        this.sigma = sigma == null ? "" : sigma;
         this.indexCharAct = 0;
-        this.pasoPorEdoAcep = false;
-        this.index_begin_lex = -1;
-        this.index_last_lex = -1;
+        this.indexInicioLex = 0;
+        this.yytext = "";
+        this.historial.clear();
     }
 
     public int getIndexCharAct() {
         return indexCharAct;
     }
 
-    public void setIndexCharAct(int indexCharAct) {
-        this.indexCharAct = indexCharAct;
+    public int getIndexInicioLex() {
+        return indexInicioLex;
     }
+
     public String getYytext() {
         return yytext;
     }
-
 }

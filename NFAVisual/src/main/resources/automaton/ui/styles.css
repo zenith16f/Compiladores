@@ -414,3 +414,21 @@
 .dialog-pane .button:default:hover {
     -fx-background-color: #e0266b;
 }
+
+/* ---------- Analizador lexico ---------- */
+.estado-afd-pendiente {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6e6e73;
+}
+
+.estado-afd-listo {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #16a34a;
+}
+
+.area-cadena {
+    -fx-font-family: "Consolas", "Monospaced";
+    -fx-font-size: 14px;
+}

@@ -33,18 +33,24 @@ public class PrincipalController implements VistaConContexto {
         String textoInferior = campoSimboloInferior.getText();
         String textoSuperior = campoSimboloSuperior.getText();
 
-        if (textoInferior == null || textoInferior.isBlank()) {
-            mostrarAviso("Escribe al menos un símbolo (ej. 'a').");
+        Character inferior;
+        Character superior;
+        try {
+            inferior = CampoSimbolo.leer(textoInferior);
+            superior = CampoSimbolo.leer(textoSuperior);
+        } catch (IllegalArgumentException e) {
+            mostrarAviso(e.getMessage());
+            return;
+        }
+        if (inferior == null) {
+            mostrarAviso("Escribe al menos un símbolo (ej. 'a', o \\s para espacio).");
             return;
         }
 
-        char inferior = textoInferior.trim().charAt(0);
         AFN nuevo;
-
-        if (textoSuperior == null || textoSuperior.isBlank()) {
+        if (superior == null) {
             nuevo = AFN.CreateAFN(inferior);
         } else {
-            char superior = textoSuperior.trim().charAt(0);
             if (superior < inferior) {
                 mostrarAviso("El símbolo 'hasta' debe ser mayor o igual al primero.");
                 return;

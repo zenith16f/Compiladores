@@ -19,7 +19,7 @@ public class ShellController {
     @FXML private HBox pillNav;
     @FXML private Button botonNavAfn;
     @FXML private Button botonNavAfd;
-    @FXML private Button botonNavUnirLexico;
+    @FXML private Button botonNavAnalizador;
     @FXML private StackPane areaContenido;
     @FXML private VBox contenedorToasts;
 
@@ -66,9 +66,9 @@ public class ShellController {
     }
 
     @FXML
-    private void onNavUnirLexico() {
-        mostrarVista("UnirLexico-view.fxml");
-        marcarActivo(botonNavUnirLexico);
+    private void onNavAnalizador() {
+        mostrarVista("AnalizadorLexico-view.fxml");
+        marcarActivo(botonNavAnalizador);
         cerrarMenuSiAbierto();
     }
 
@@ -79,7 +79,7 @@ public class ShellController {
     }
 
     private void marcarActivo(Button activo) {
-        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavUnirLexico}) {
+        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavAnalizador}) {
             boton.getStyleClass().remove("boton-nav-pill-activo");
         }
         activo.getStyleClass().add("boton-nav-pill-activo");

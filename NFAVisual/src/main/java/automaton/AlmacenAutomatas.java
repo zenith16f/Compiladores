@@ -9,8 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.IdentityHashMap;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -125,48 +127,94 @@ public class AlmacenAutomatas {
 
     // ---------- AFD -> analizador lexico ----------
 
-    public Path exportarAfdParaLexico(AFD afd, String nombre) throws IOException {
+    /** Carpeta sugerida para las tablas que lee el analizador lexico (Automatas/Lexico). */
+    public Path getCarpetaLexico() {
+        return carpetaDe(EXT_LEXICO);
+    }
+
+    /** Escribe el AFD como tabla para {@link AnalizadorLexico#desdeArchivo(Path)}; el formato esta descrito ahi. */
+    public Path exportarAfdParaLexico(AFD afd, Path destino) throws IOException {
         if (afd == null) {
             throw new IllegalArgumentException("No hay AFD que exportar.");
         }
-        Path destino = rutaDe(nombre, EXT_LEXICO);
-        Files.createDirectories(destino.getParent());
+        List<Estado> estados = ordenarEstados(afd);
+        Map<Estado, Integer> fila = new IdentityHashMap<>();
+        for (int i = 0; i < estados.size(); i++) {
+            fila.put(estados.get(i), i);
+        }
 
-        try (BufferedWriter w = Files.newBufferedWriter(destino, StandardCharsets.UTF_8)) {
-            List<Character> alfabeto = afd.getAlfabeto();
-
-            StringBuilder cabecera = new StringBuilder();
-            for (char c : alfabeto) {
-                if (cabecera.length() > 0) {
-                    cabecera.append(' ');
+        int[][] tabla = new int[estados.size()][AnalizadorLexico.NUM_COLUMNAS];
+        boolean[] enAlfabeto = new boolean[AnalizadorLexico.NUM_COLUMNAS];
+        for (int i = 0; i < estados.size(); i++) {
+            Arrays.fill(tabla[i], -1);
+            for (Transicion t : estados.get(i).getTransiciones()) {
+                if (t.IsEpsilon()) {
+                    continue;
                 }
-                cabecera.append(c);
+                if (t.getSimboloSuperior() >= AnalizadorLexico.NUM_COLUMNAS) {
+                    throw new IOException("El símbolo '" + t.getSimboloSuperior()
+                            + "' no cabe en la tabla ASCII (0-255); no se puede exportar.");
+                }
+                for (int c = t.getSimboloInferior(); c <= t.getSimboloSuperior(); c++) {
+                    tabla[i][c] = fila.get(t.getEstadoDestino());
+                    enAlfabeto[c] = true;
+                }
             }
-            w.write(cabecera.toString());
+        }
+
+        if (destino.getParent() != null) {
+            Files.createDirectories(destino.getParent());
+        }
+        try (BufferedWriter w = Files.newBufferedWriter(destino, StandardCharsets.UTF_8)) {
+            w.write(String.valueOf(estados.size()));
             w.newLine();
 
-            for (Estado estado : afd.getEstadosAFD()) {
-                StringBuilder fila = new StringBuilder();
-                for (char c : alfabeto) {
-                    if (fila.length() > 0) {
-                        fila.append(' ');
-                    }
-                    fila.append(destinoPara(estado, c));
+            StringBuilder linea = new StringBuilder();
+            for (int c = 0; c < AnalizadorLexico.NUM_COLUMNAS; c++) {
+                linea.append(c == 0 ? "" : " ").append(enAlfabeto[c] ? c : -1);
+            }
+            w.write(linea.toString());
+            w.newLine();
+
+            for (int i = 0; i < estados.size(); i++) {
+                Estado e = estados.get(i);
+                linea = new StringBuilder();
+                for (int c = 0; c < AnalizadorLexico.NUM_COLUMNAS; c++) {
+                    linea.append(tabla[i][c]).append(' ');
                 }
-                w.write(fila.toString());
+                boolean acepta = e.isEstadoAccept() || afd.getEstadosAccept().contains(e);
+                linea.append(acepta ? e.getToken() : -1);
+                w.write(linea.toString());
                 w.newLine();
             }
         }
         return destino;
     }
 
-    private int destinoPara(Estado estado, char simbolo) {
-        for (Transicion t : estado.getTransiciones()) {
-            if (!t.IsEpsilon() && simbolo >= t.getSimboloInferior() && simbolo <= t.getSimboloSuperior()) {
-                return t.getEstadoDestino().getIdEstado();
+    // El estado inicial va en la fila 0; despues los demas alcanzables en orden de busqueda
+    private List<Estado> ordenarEstados(AFD afd) {
+        Estado inicial = afd.getEstadoInicial();
+        if (inicial == null) {
+            if (afd.getEstadosAFD().isEmpty()) {
+                throw new IllegalArgumentException("El AFD no tiene estados.");
+            }
+            inicial = afd.getEstadosAFD().get(0);
+        }
+        List<Estado> orden = new ArrayList<>();
+        Map<Estado, Boolean> vistos = new IdentityHashMap<>();
+        Deque<Estado> pendientes = new ArrayDeque<>();
+        pendientes.add(inicial);
+        vistos.put(inicial, true);
+        while (!pendientes.isEmpty()) {
+            Estado actual = pendientes.poll();
+            orden.add(actual);
+            for (Transicion t : actual.getTransiciones()) {
+                if (vistos.putIfAbsent(t.getEstadoDestino(), true) == null) {
+                    pendientes.add(t.getEstadoDestino());
+                }
             }
         }
-        return -1;
+        return orden;
     }
 
     // ---------- Nucleo comun de persistencia ----------
@@ -379,13 +427,16 @@ public class AlmacenAutomatas {
 
     // ---------- Rutas ----------
 
-    // Automatas/AFN/*.afn, Automatas/AFD/*.afd; los .txt del analizador quedan en Automatas/
+    // Automatas/AFN/*.afn, Automatas/AFD/*.afd, Automatas/Lexico/*.txt
     private Path carpetaDe(String extension) {
         if (EXT_AFN.equals(extension)) {
             return carpeta.resolve("AFN");
         }
         if (EXT_AFD.equals(extension)) {
             return carpeta.resolve("AFD");
+        }
+        if (EXT_LEXICO.equals(extension)) {
+            return carpeta.resolve("Lexico");
         }
         return carpeta;
     }

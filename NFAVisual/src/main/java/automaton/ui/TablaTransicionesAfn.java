@@ -152,6 +152,7 @@ public final class TablaTransicionesAfn {
     private static String etiquetaSimbolo(Transicion transicion) {
         char inferior = transicion.getSimboloInferior();
         char superior = transicion.getSimboloSuperior();
-        return inferior == superior ? String.valueOf(inferior) : (inferior + "-" + superior);
+        return inferior == superior ? CampoSimbolo.mostrar(inferior)
+                : (CampoSimbolo.mostrar(inferior) + "-" + CampoSimbolo.mostrar(superior));
     }
 }

@@ -25,7 +25,7 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Nuevo AFN:"/>
                 <TextField fx:id="campoNombreNuevo" promptText="nombre" prefWidth="120"/>
-                <TextField fx:id="campoSimboloInferior" promptText="simbolo" prefWidth="70"/>
+                <TextField fx:id="campoSimboloInferior" promptText="símbolo (\s = espacio)" prefWidth="150"/>
                 <TextField fx:id="campoSimboloSuperior" promptText="hasta (opcional)" prefWidth="120"/>
                 <TextField fx:id="campoToken" promptText="token (opcional)" prefWidth="120"/>
                 <Button text="Crear AFN" onAction="#onCrearAfn" styleClass="boton-primario"/>

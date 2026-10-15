@@ -9,10 +9,10 @@ import javafx.application.Platform;
 public class AppContext {
     private final GestorAFN gestor = new GestorAFN();
     private final GestorAFD gestorAfd = new GestorAFD();
+    private final AlmacenAutomatas almacen = new AlmacenAutomatas();
 
     public AppContext() {
         // Carpeta "automatas" junto a donde corre la app: AFN autoguardados, AFD guardados con boton
-        AlmacenAutomatas almacen = new AlmacenAutomatas();
         // Los fallos de archivo (nombre invalido, disco, archivo danado) se avisan en pantalla
         gestor.setManejadorErrores(mensaje -> Platform.runLater(
                 () -> Avisos.error(mensaje)));
@@ -26,5 +26,9 @@ public class AppContext {
 
     public GestorAFD getGestorAfd() {
         return gestorAfd;
+    }
+
+    public AlmacenAutomatas getAlmacen() {
+        return almacen;
     }
 }
