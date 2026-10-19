@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ScrollBar?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="automaton.ui.ConvertirAFDController"
@@ -37,7 +38,7 @@
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.68" orientation="HORIZONTAL" styleClass="split-ver-afn">
+        <SplitPane dividerPositions="0.01" orientation="HORIZONTAL" styleClass="split-ver-afn">
             <items>
                 <StackPane styleClass="panel-catalogo">
                     <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">

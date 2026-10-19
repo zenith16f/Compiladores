@@ -25,6 +25,7 @@ public class ConvertirAFDController implements VistaConContexto {
     private Label etiquetaVacio;
     @FXML
     private TableView<TablaTransicionesAfn.Fila> tablaTransiciones;
+    private TableView<TablaTransicionesAfn> tabla;
 
     private GestorAFN gestor;
     private GestorAFD gestorAfd;

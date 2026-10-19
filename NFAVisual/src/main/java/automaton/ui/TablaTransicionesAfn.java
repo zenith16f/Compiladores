@@ -5,6 +5,7 @@ import automaton.AFN;
 import automaton.Estado;
 import automaton.Transicion;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -54,14 +55,21 @@ public final class TablaTransicionesAfn {
     }
 
     public static void poblar(TableView<Fila> tabla, Estado estadoInicial, List<Estado> estados) {
+        ScrollPane scrollPane = new ScrollPane();
+
+
         tabla.getColumns().clear();
         tabla.getItems().clear();
+        scrollPane.setContent(tabla);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setFitToWidth(false);
 
         if (estadoInicial == null || estados == null) {
             return;
         }
 
-        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tabla.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         TableColumn<Fila, String> columnaEstado = new TableColumn<>("Estado");
         columnaEstado.setCellValueFactory(datos -> new ReadOnlyStringWrapper(datos.getValue().getEstado()));
@@ -128,7 +136,7 @@ public final class TablaTransicionesAfn {
         return columna;
     }
 
-    
+
     private static TableCell<Fila, String> celdaEstilizada(boolean puedeEstarVacia) {
         return new TableCell<>() {
             @Override

@@ -236,6 +236,7 @@
     -fx-padding: 0;
 }
 
+
 /* ---------- Divisor entre el grafico y la tabla en "Ver AFN" ---------- */
 
 .split-ver-afn {
@@ -301,8 +302,8 @@
     -fx-text-fill: #1c1c1e;
 }
 
-/* ---------- Lista de AFN con checkboxes (unir varios a la vez) ---------- */
 
+/* ---------- Lista de AFN con checkboxes (unir varios a la vez) ---------- */
 .lista-checks .check-box .box {
     -fx-border-color: #b7b7bd;
     -fx-background-color: #fbfbfa;
@@ -366,7 +367,7 @@
     -fx-border-color: #e4e5e9;
     -fx-border-radius: 8;
     -fx-padding: 12 14 12 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 16, 0.1, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.16), 16, 0.1, 0, 4);
     -fx-cursor: hand;
 }
 
@@ -393,9 +394,17 @@
     -fx-font-weight: bold;
 }
 
-.toast-exito { -fx-background-color: #16a34a; }
-.toast-aviso { -fx-background-color: #d97706; }
-.toast-error { -fx-background-color: #dc2626; }
+.toast-exito {
+    -fx-background-color: #16a34a;
+}
+
+.toast-aviso {
+    -fx-background-color: #d97706;
+}
+
+.toast-error {
+    -fx-background-color: #dc2626;
+}
 
 /* ---------- Ventanas emergentes (solo confirmaciones) ---------- */
 
