@@ -38,31 +38,27 @@
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.01" orientation="HORIZONTAL" styleClass="split-ver-afn">
-            <items>
-                <StackPane styleClass="panel-catalogo">
-                    <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">
-                        <content>
-                            <LienzoAfn fx:id="lienzo"/>
-                        </content>
-                    </ScrollPane>
-                    <Label fx:id="etiquetaVacio" text="Selecciona un AFN para convertirlo a AFD"
-                           styleClass="subtitulo"/>
-                </StackPane>
+        <StackPane styleClass="panel-catalogo">
+            <ScrollPane pannable="true" fitToWidth="false" fitToHeight="false" styleClass="scroll-grafico">
+                <content>
+                    <LienzoAfn fx:id="lienzo"/>
+                </content>
+            </ScrollPane>
+            <Label fx:id="etiquetaVacio" text="Selecciona un AFN para convertirlo a AFD"
+                   styleClass="subtitulo"/>
+        </StackPane>
 
-                <VBox spacing="8" styleClass="panel-catalogo" minWidth="220">
-                    <padding>
-                        <Insets top="12" right="12" bottom="16" left="12"/>
-                    </padding>
-                    <Label text="Tabla de transiciones (AFD)" styleClass="subtitulo"/>
-                    <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS">
-                        <placeholder>
-                            <Label text="Selecciona un AFN para ver la tabla del AFD" styleClass="subtitulo"/>
-                        </placeholder>
-                    </TableView>
-                </VBox>
-            </items>
-        </SplitPane>
+        <VBox spacing="8" styleClass="panel-catalogo" minWidth="220">
+            <padding>
+                <Insets top="12" right="12" bottom="16" left="12"/>
+            </padding>
+            <Label text="Tabla de transiciones (AFD)" styleClass="subtitulo"/>
+            <TableView fx:id="tablaTransiciones" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <Label text="Selecciona un AFN para ver la tabla del AFD" styleClass="subtitulo"/>
+                </placeholder>
+            </TableView>
+        </VBox>
     </center>
 
 </BorderPane>

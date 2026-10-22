@@ -11,10 +11,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 public final class TablaTransicionesAfn {
 
@@ -83,20 +84,74 @@ public final class TablaTransicionesAfn {
         columnaEstado.setCellFactory(col -> celdaEstilizada(false));
         tabla.getColumns().add(columnaEstado);
 
-        TreeSet<String> simbolos = new TreeSet<>();
+        // Destino (por estado) de cada simbolo individual (p.ej. 'a', 'b', 'c'...)
+        // que no viene ya con un rango explicito en la transicion.
+        Map<Character, Map<Estado, String>> destinoPorCaracter = new HashMap<>();
+        // Destino (por estado) de columnas que se muestran tal cual: epsilon y
+        // transiciones que ya traian un rango explicito (p.ej. de CrearAFN(a, z)).
+        Map<String, Map<Estado, String>> destinoPorEtiquetaFija = new HashMap<>();
         boolean hayEpsilon = false;
+
         for (Estado estado : estados) {
+            Map<Character, List<String>> destinosCaracter = new HashMap<>();
+            Map<String, List<String>> destinosFija = new HashMap<>();
+
             for (Transicion transicion : estado.getTransiciones()) {
+                String destino = "q" + transicion.getEstadoDestino().getIdEstado();
                 if (transicion.IsEpsilon()) {
                     hayEpsilon = true;
+                    destinosFija.computeIfAbsent("ε", k -> new ArrayList<>()).add(destino);
+                } else if (transicion.getSimboloInferior() == transicion.getSimboloSuperior()) {
+                    destinosCaracter.computeIfAbsent(transicion.getSimboloInferior(), k -> new ArrayList<>()).add(destino);
                 } else {
-                    simbolos.add(etiquetaSimbolo(transicion));
+                    destinosFija.computeIfAbsent(etiquetaSimbolo(transicion), k -> new ArrayList<>()).add(destino);
                 }
+            }
+
+            for (Map.Entry<Character, List<String>> entrada : destinosCaracter.entrySet()) {
+                List<String> destinos = entrada.getValue();
+                Collections.sort(destinos);
+                destinoPorCaracter
+                        .computeIfAbsent(entrada.getKey(), k -> new HashMap<>())
+                        .put(estado, String.join(", ", destinos));
+            }
+            for (Map.Entry<String, List<String>> entrada : destinosFija.entrySet()) {
+                List<String> destinos = entrada.getValue();
+                Collections.sort(destinos);
+                destinoPorEtiquetaFija
+                        .computeIfAbsent(entrada.getKey(), k -> new HashMap<>())
+                        .put(estado, String.join(", ", destinos));
             }
         }
 
-        for (String simbolo : simbolos) {
-            tabla.getColumns().add(crearColumnaSimbolo(simbolo));
+        // Columnas finales, ordenadas alfabeticamente por etiqueta: empezamos con
+        // las fijas (rangos explicitos) y les sumamos los caracteres sueltos,
+        // fusionando en un rango ("a-z") los que sean consecutivos y tengan
+        // exactamente el mismo destino en todos los estados.
+        Map<String, Map<Estado, String>> columnas = new TreeMap<>(destinoPorEtiquetaFija);
+
+        List<Character> caracteres = new ArrayList<>(destinoPorCaracter.keySet());
+        Collections.sort(caracteres);
+        int i = 0;
+        while (i < caracteres.size()) {
+            char inicio = caracteres.get(i);
+            Map<Estado, String> destinoGrupo = destinoPorCaracter.get(inicio);
+            int j = i + 1;
+            while (j < caracteres.size()
+                    && caracteres.get(j) == caracteres.get(j - 1) + 1
+                    && destinoPorCaracter.get(caracteres.get(j)).equals(destinoGrupo)) {
+                j++;
+            }
+            char fin = caracteres.get(j - 1);
+            String etiqueta = inicio == fin
+                    ? CampoSimbolo.mostrar(inicio)
+                    : CampoSimbolo.mostrar(inicio) + "-" + CampoSimbolo.mostrar(fin);
+            columnas.put(etiqueta, destinoGrupo);
+            i = j;
+        }
+
+        for (String etiqueta : columnas.keySet()) {
+            tabla.getColumns().add(crearColumnaSimbolo(etiqueta));
         }
         if (hayEpsilon) {
             tabla.getColumns().add(crearColumnaSimbolo("ε"));
@@ -104,17 +159,12 @@ public final class TablaTransicionesAfn {
 
         List<Fila> filas = new ArrayList<>();
         for (Estado estado : estados) {
-            Map<String, List<String>> destinosPorSimbolo = new HashMap<>();
-            for (Transicion transicion : estado.getTransiciones()) {
-                String clave = transicion.IsEpsilon() ? "ε" : etiquetaSimbolo(transicion);
-                destinosPorSimbolo
-                        .computeIfAbsent(clave, k -> new ArrayList<>())
-                        .add("q" + transicion.getEstadoDestino().getIdEstado());
-            }
-
             Map<String, String> celdas = new HashMap<>();
-            for (Map.Entry<String, List<String>> entrada : destinosPorSimbolo.entrySet()) {
-                celdas.put(entrada.getKey(), String.join(", ", entrada.getValue()));
+            for (Map.Entry<String, Map<Estado, String>> columna : columnas.entrySet()) {
+                String destino = columna.getValue().get(estado);
+                if (destino != null) {
+                    celdas.put(columna.getKey(), destino);
+                }
             }
 
             String etiquetaEstado = (estado == estadoInicial ? "→" : "")

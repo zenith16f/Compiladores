@@ -16,8 +16,10 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -82,13 +84,13 @@ public class LienzoAfn extends Pane {
             if (posOrigen == null) {
                 continue;
             }
-            for (Transicion transicion : origen.getTransiciones()) {
-                Estado destino = transicion.getEstadoDestino();
+            for (GrupoTransicion grupo : agruparTransicionesOrigen(origen)) {
+                Estado destino = grupo.destino();
                 double[] posDestino = posiciones.get(destino);
                 if (posDestino == null) {
                     continue;
                 }
-                String etiqueta = transicion.IsEpsilon() ? "ε" : etiquetaSimbolo(transicion);
+                String etiqueta = grupo.etiqueta();
 
                 if (origen == destino) {
                     dibujarBucle(posOrigen[0], posOrigen[1], etiqueta);
@@ -175,6 +177,57 @@ public class LienzoAfn extends Pane {
         char superior = transicion.getSimboloSuperior();
         return inferior == superior ? CampoSimbolo.mostrar(inferior)
                 : (CampoSimbolo.mostrar(inferior) + "-" + CampoSimbolo.mostrar(superior));
+    }
+
+    private record GrupoTransicion(Estado destino, String etiqueta) {
+    }
+
+    /**
+     * Agrupa las transiciones salientes de un estado por destino, fusionando
+     * en un rango ("a-z") los simbolos individuales consecutivos que van al
+     * mismo destino. Asi un AFD con 26 transiciones sueltas hacia el mismo
+     * estado se dibuja como una sola flecha con la etiqueta "a-z" en vez de
+     * 26 flechas superpuestas.
+     */
+    private List<GrupoTransicion> agruparTransicionesOrigen(Estado origen) {
+        List<GrupoTransicion> grupos = new ArrayList<>();
+        Map<Estado, List<Character>> caracteresPorDestino = new LinkedHashMap<>();
+
+        for (Transicion transicion : origen.getTransiciones()) {
+            Estado destino = transicion.getEstadoDestino();
+            if (transicion.IsEpsilon()) {
+                grupos.add(new GrupoTransicion(destino, "ε"));
+            } else if (transicion.getSimboloInferior() == transicion.getSimboloSuperior()) {
+                caracteresPorDestino
+                        .computeIfAbsent(destino, k -> new ArrayList<>())
+                        .add(transicion.getSimboloInferior());
+            } else {
+                grupos.add(new GrupoTransicion(destino, etiquetaSimbolo(transicion)));
+            }
+        }
+
+        for (Map.Entry<Estado, List<Character>> entrada : caracteresPorDestino.entrySet()) {
+            Estado destino = entrada.getKey();
+            List<Character> caracteres = entrada.getValue();
+            Collections.sort(caracteres);
+
+            int i = 0;
+            while (i < caracteres.size()) {
+                char inicio = caracteres.get(i);
+                int j = i + 1;
+                while (j < caracteres.size() && caracteres.get(j) == caracteres.get(j - 1) + 1) {
+                    j++;
+                }
+                char fin = caracteres.get(j - 1);
+                String etiqueta = inicio == fin
+                        ? CampoSimbolo.mostrar(inicio)
+                        : CampoSimbolo.mostrar(inicio) + "-" + CampoSimbolo.mostrar(fin);
+                grupos.add(new GrupoTransicion(destino, etiqueta));
+                i = j;
+            }
+        }
+
+        return grupos;
     }
 
     // ---------- Dibujo ----------
