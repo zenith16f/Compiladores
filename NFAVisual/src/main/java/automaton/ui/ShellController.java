@@ -20,6 +20,7 @@ public class ShellController {
     @FXML private Button botonNavAfn;
     @FXML private Button botonNavAfd;
     @FXML private Button botonNavAnalizador;
+    @FXML private Button botonNavLL1;
     @FXML private StackPane areaContenido;
     @FXML private VBox contenedorToasts;
 
@@ -72,6 +73,13 @@ public class ShellController {
         cerrarMenuSiAbierto();
     }
 
+    @FXML
+    private void onNavLL1() {
+        mostrarVista("LL1-view.fxml");
+        marcarActivo(botonNavLL1);
+        cerrarMenuSiAbierto();
+    }
+
     private void cerrarMenuSiAbierto() {
         if (menuAbierto) {
             onToggleMenu();
@@ -79,7 +87,7 @@ public class ShellController {
     }
 
     private void marcarActivo(Button activo) {
-        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavAnalizador}) {
+        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavAnalizador, botonNavLL1}) {
             boton.getStyleClass().remove("boton-nav-pill-activo");
         }
         activo.getStyleClass().add("boton-nav-pill-activo");

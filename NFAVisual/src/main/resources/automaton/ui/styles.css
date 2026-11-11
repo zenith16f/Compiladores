@@ -441,3 +441,30 @@
     -fx-font-family: "Consolas", "Monospaced";
     -fx-font-size: 14px;
 }
+
+/* ---------- Tabla LL(1) ---------- */
+.texto-ayuda {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8e8e93;
+}
+
+.texto-error {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #dc2626;
+}
+
+.table-view .columna-izquierda {
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-family: "Consolas", "Monospaced";
+}
+
+.table-view .columna-derecha {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-font-family: "Consolas", "Monospaced";
+}
+
+.table-view .column-header.columna-izquierda .label,
+.table-view .column-header.columna-derecha .label {
+    -fx-alignment: CENTER;
+}

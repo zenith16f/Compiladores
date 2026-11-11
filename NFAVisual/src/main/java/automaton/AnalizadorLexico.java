@@ -17,7 +17,7 @@ import java.util.Deque;
  *   una linea por estado (la fila 0 es el estado inicial): 256 destinos (-1 = sin transicion) y al final el token
  *   (-1 si el estado no es de aceptacion)
  */
-public class AnalizadorLexico {
+public class AnalizadorLexico implements Lexico {
 
     public static final int FIN = 0;            // ya no hay nada que analizar
     public static final int TOKEN_ERROR = 1400; // caracter que no forma parte de ningun lexema
@@ -88,6 +88,7 @@ public class AnalizadorLexico {
      * Regresa el token del siguiente lexema (el mas largo posible), TOKEN_ERROR si el caracter
      * actual no inicia ningun lexema, o FIN cuando ya no queda cadena. El lexema queda en yytext.
      */
+    @Override
     public int yylex() {
         historial.push(indexCharAct);
         indexInicioLex = indexCharAct;
@@ -127,6 +128,7 @@ public class AnalizadorLexico {
     }
 
     /** Deshace la ultima llamada a yylex(). @return false si no habia nada que deshacer */
+    @Override
     public boolean undoToken() {
         if (historial.isEmpty()) {
             return false;
@@ -148,6 +150,7 @@ public class AnalizadorLexico {
     }
 
     /** Cambia la cadena y reinicia el analisis desde el principio. */
+    @Override
     public void setSigma(String sigma) {
         this.sigma = sigma == null ? "" : sigma;
         this.indexCharAct = 0;
@@ -156,14 +159,17 @@ public class AnalizadorLexico {
         this.historial.clear();
     }
 
+    @Override
     public int getIndexCharAct() {
         return indexCharAct;
     }
 
+    @Override
     public int getIndexInicioLex() {
         return indexInicioLex;
     }
 
+    @Override
     public String getYytext() {
         return yytext;
     }
