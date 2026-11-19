@@ -25,7 +25,10 @@ public class LexicoTerminales implements Lexico {
     private final Deque<Integer> historial = new ArrayDeque<>();
 
     public LexicoTerminales(TablaLL1 tabla) {
-        SimbGram[] todos = tabla.getSimbTerm();
+        this(tabla.getSimbTerm());
+    }
+
+    public LexicoTerminales(SimbGram[] todos) {
         terminales = java.util.Arrays.copyOf(todos, todos.length - 1);
     }
 

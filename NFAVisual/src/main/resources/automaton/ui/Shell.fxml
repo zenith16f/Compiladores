@@ -39,6 +39,8 @@
                 <Button fx:id="botonNavAfd" text="&#8594; AFD" onAction="#onNavAfd" styleClass="boton-nav-pill"/>
                 <Button fx:id="botonNavAnalizador" text="&#931; Analizador Léxico" onAction="#onNavAnalizador" styleClass="boton-nav-pill"/>
                 <Button fx:id="botonNavLL1" text="&#9638; Tabla LL(1)" onAction="#onNavLL1" styleClass="boton-nav-pill"/>
+                <Button fx:id="botonNavLR0" text="&#9638; Tabla LR(0)" onAction="#onNavLR0" styleClass="boton-nav-pill"/>
+                <Button fx:id="botonNavDescenso" text="&#8627; Descenso Recursivo" onAction="#onNavDescenso" styleClass="boton-nav-pill"/>
                 <Button fx:id="botonCerrarPill" text="&#10005;" onAction="#onToggleMenu" styleClass="boton-cerrar-pill"/>
             </HBox>
         </HBox>

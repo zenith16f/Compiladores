@@ -21,6 +21,8 @@ public class ShellController {
     @FXML private Button botonNavAfd;
     @FXML private Button botonNavAnalizador;
     @FXML private Button botonNavLL1;
+    @FXML private Button botonNavLR0;
+    @FXML private Button botonNavDescenso;
     @FXML private StackPane areaContenido;
     @FXML private VBox contenedorToasts;
 
@@ -80,6 +82,20 @@ public class ShellController {
         cerrarMenuSiAbierto();
     }
 
+    @FXML
+    private void onNavLR0() {
+        mostrarVista("LR0-view.fxml");
+        marcarActivo(botonNavLR0);
+        cerrarMenuSiAbierto();
+    }
+
+    @FXML
+    private void onNavDescenso() {
+        mostrarVista("DescensoRecursivo-view.fxml");
+        marcarActivo(botonNavDescenso);
+        cerrarMenuSiAbierto();
+    }
+
     private void cerrarMenuSiAbierto() {
         if (menuAbierto) {
             onToggleMenu();
@@ -87,7 +103,7 @@ public class ShellController {
     }
 
     private void marcarActivo(Button activo) {
-        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavAnalizador, botonNavLL1}) {
+        for (Button boton : new Button[]{botonNavAfn, botonNavAfd, botonNavAnalizador, botonNavLL1, botonNavLR0, botonNavDescenso}) {
             boton.getStyleClass().remove("boton-nav-pill-activo");
         }
         activo.getStyleClass().add("boton-nav-pill-activo");
